@@ -70,6 +70,10 @@ input::placeholder {
     color: rgb(215, 210, 200);
 }
 
+input {
+    caret-color: yellowgreen;
+}
+
 input:-webkit-autofill {
     transition: background-color 60000s ease-in-out 0s;
     -webkit-text-fill-color: white !important;
@@ -117,4 +121,5 @@ a:hover {
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
 }
