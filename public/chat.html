@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convey</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Yatra One">
+    <link rel="stylesheet" href="chat.css">
+    <script src="chat.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.2/axios.min.js" defer></script>
+</head>
+
+<body>
+    <section id="users-section">
+        <div id="logged-user-container">
+            <div>
+                <img src="image.png" alt="convey-logo">
+                <h1>Convey</h1>
+            </div>
+            <p id="logged-user"></p>
+        </div>
+        <div id="other-users-container">
+            <p>ONLINE</p>
+            <ul id="other-users"></ul>
+        </div>
+    </section>
+    <section id="chat-section">
+        <ul></ul>
+        <form>
+            <input type="text" name="msg" id="msg-sent" placeholder="Message">
+            <button type="submit" id="send-msg-btn">Send</button>
+        </form>
+    </section>
+</body>
+
+</html>

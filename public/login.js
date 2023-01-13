@@ -20,6 +20,9 @@ async function loginUser(event) {
             } else if (response.status === 201) {
                 localStorage.setItem('token', response.data.token);
                 showNotification(response.data.message);
+                setTimeout(() => {
+                    window.location.href = './chat.html';
+                }, 3000);
             } else {
                 showNotification('Something went wrong. Please try again.');
             }

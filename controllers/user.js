@@ -9,7 +9,7 @@ exports.postAddUser = async (req, res, next) => {
         } else {
             const user = await User.findOne({ where: { email: req.body.email } });
             if (user) {
-                res.status(403).json({ success: false, message: 'A user with this email already exist. Please login instead.' });
+                res.status(403).json({ success: false, message: 'A user with this email already exist.' });
             } else {
                 bcrypt.hash(req.body.password, 10, async (err, hash) => {
                     await User.create({
@@ -40,7 +40,12 @@ exports.postLoginUser = async (req, res, next) => {
                     if (!result) {
                         res.status(401).json({ success: false, message: 'Incorrect password.' });
                     } else {
-                        res.status(201).json({ success: true, message: 'Logged in successfully.', token: generateAccessToken(user.id) });
+                        res.status(201).json({
+                            success: true,
+                            message: 'Logged in successfully.',
+                            token: generateAccessToken(user.id),
+                            loggedUser: user.name
+                        });
                     }
                 });
             }

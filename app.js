@@ -11,6 +11,7 @@ dotenv.config();
 // Importing my exports
 const sequelize = require('./util/database');
 const userRoutes = require('./routes/user');
+const chatRoutes = require('./routes/chat');
 
 // Using third party packages
 app.use(cors({
@@ -21,6 +22,7 @@ app.use(bodyParser.json());
 
 // Routes
 app.use('/user', userRoutes);
+app.use('/chat', chatRoutes);
 
 sequelize.sync()
     .then(app.listen(3000))
