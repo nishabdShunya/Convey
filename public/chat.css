@@ -28,7 +28,7 @@ body {
 #users-section {
     flex: 1;
     height: 100%;
-    background-color: rgb(33, 33, 33);
+    background-color: rgb(22, 27, 34);
     padding: 0 2rem 2rem 2rem;
     display: flex;
     flex-direction: column;
@@ -80,6 +80,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
 }
 
 #other-users-container {
@@ -88,7 +89,7 @@ body {
     font-size: 1.5rem;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: stretch;
 }
 
@@ -96,11 +97,10 @@ body {
     align-self: center;
     color: rgb(255, 255, 255, 0.4);
     font-weight: bold;
-    margin: 0;
+    margin-bottom: 1rem;
 }
 
 #other-users {
-    background-color: rgb(89, 89, 102, 0.3);
     border-radius: 0.5rem;
     padding: 0;
     margin: 0;
@@ -113,25 +113,76 @@ body {
 }
 
 #other-users li {
-    padding: 2rem 2rem;
-    border-bottom: 0.15rem solid rgb(89, 89, 102);
+    padding: 2rem;
+    margin: 0 1rem 1rem 0;
+    border-radius: 0.5rem;
+    background-color: rgb(33, 38, 45);
     color: rgb(215, 210, 200);
     font-weight: bold;
 }
 
 #chat-section {
     flex: 3;
-    background-color: rgb(89, 89, 102, 0.3);
+    background-color: rgb(13, 17, 23);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+#chat {
+    width: 95%;
+    padding: 0;
+    margin: 2rem 2rem 5rem 2rem;
+    list-style-type: none;
+    border-radius: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    overflow-y: scroll;
+}
+
+#chat li {
+    padding: 0.5rem 1rem;
+    margin: 0 1rem 1rem 0;
+    background-color: rgb(33, 38, 45);
+    color: rgb(215, 210, 200);
+    font-weight: bold;
+    border-radius: 0.5rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    align-items: center;
+}
+
+#chat li div {
+    align-self: stretch;
+    background-color: rgb(22, 27, 34);
+    margin: 0.5rem 0;
+    padding: 1rem;
+    font-size: 1.25rem;
+    border-radius: 0.5rem;
+}
+
+#chat li p {
+    margin: 0;
+}
+
+#msg-by {
+    align-self: flex-start;
+    color: yellowgreen;
+    font-style: italic;
+}
+
+#msg-time {
+    align-self: flex-end;
+    color: yellowgreen;
+    font-style: italic;
 }
 
 #chat-section form {
     font-size: 1.5rem;
     margin: 1rem;
-    height: 5rem;
     width: 95%;
     border-radius: 0.5rem;
     display: flex;
@@ -143,8 +194,9 @@ body {
     flex: 10;
     margin-right: 0.5rem;
     padding: 1rem;
-    background-color: rgb(89, 89, 102);
+    background-color: rgb(33, 38, 45);
     color: rgb(215, 210, 200);
+    font-weight: bold;
     border: none;
     border-radius: 0.5rem;
 }
@@ -168,7 +220,7 @@ input:-webkit-autofill {
     border: none;
     border-radius: 0.5rem;
     background-image: linear-gradient(45deg, rgb(255, 206, 86), rgb(130, 195, 95));
-    color: rgb(33, 33, 33);
+    background-color: rgb(22, 27, 34);
     font-weight: bold;
 }
 
@@ -183,21 +235,20 @@ input:-webkit-autofill {
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: rgba(89, 89, 102);
+    background-image: linear-gradient(45deg, rgb(255, 206, 86), rgb(130, 195, 95));
     border-radius: 0.5rem;
+    border: 0.2rem solid rgb(13, 17, 23);
 }
 
-.notification {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    background-color: rgb(33, 33, 33, 0.9);
+#msg-notification {
+    padding: 1rem;
+    margin: 1rem 0 0 0;
+    border-radius: 0.5rem;
+    background-color: rgb(33, 38, 45);
     color: yellowgreen;
-    font-family: 'Yatra One';
-    font-size: 4rem;
-    display: flex;
+    font-family: 'Quicksand';
+    font-weight: bold;
+    display: none;
     justify-content: center;
     align-items: center;
     text-align: center;

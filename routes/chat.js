@@ -10,4 +10,6 @@ router.get('/online-users', authMiddleware.authenticate, chatController.getOnlin
 
 router.post('/add-msg', authMiddleware.authenticate, chatController.postAddMsg);
 
+router.get('/get-msgs', authMiddleware.authenticate, chatController.getMsgs);
+
 module.exports = router;
