@@ -25,23 +25,33 @@ async function loadUsers() {
 }
 
 async function loadMessages() {
-    const response = await axios.get('http://localhost:3000/chat/get-msgs', {
-        headers: {
-            Authorization: localStorage.getItem('token')
+    setInterval(async () => {
+        const response = await axios.get('http://localhost:3000/chat/get-msgs', {
+            headers: {
+                Authorization: localStorage.getItem('token')
+            }
+        });
+        const messages = response.data.messages;
+        chat.innerHTML = '';
+        for (let message of messages) {
+            const time = message.dataValues.time;
+            const splittedTime = time.split(':');
+            const AMorPM = splittedTime[0] >= 12 ? 'PM' : 'AM';
+            const hour = splittedTime[0] % 12 || 12;
+            const finalTime = `${hour} : ${splittedTime[1]} ${AMorPM}`;
+            const chatItem = `
+            <li>
+                <p id="msg-by">${message.by}</p>
+                <div>
+                    <p>${message.dataValues.msg}</p>
+                </div>    
+                <p id="msg-time">${message.dataValues.date} (${finalTime})</p>
+            </li>`;
+            chat.innerHTML += chatItem;
         }
-    });
-    const messages = response.data.messages;
-    for (let message of messages) {
-        const chatItem = `
-        <li>
-            <p id="msg-by">${message.by}</p>
-            <div>
-                <p>${message.dataValues.msg}</p>
-            </div>    
-            <p id="msg-time">${message.dataValues.createdAt}</p>
-        </li>`;
-        chat.innerHTML += chatItem;
-    }
+        const chatContainer = document.getElementById('chat-container');
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }, 1000)
 }
 
 sendMsgBtn.addEventListener('click', sendMessage);
@@ -66,9 +76,9 @@ function showMsgNotification(message) {
     const notificationDiv = document.getElementById('msg-notification');
     notificationDiv.innerHTML = `${message}`;
     notificationDiv.style.display = 'flex';
-    chat.style.marginBottom = '0';
+    // chat.style.marginBottom = '0';
     setTimeout(() => {
         notificationDiv.style.display = 'none';
-        chat.style.marginBottom = '5rem';
+        // chat.style.marginBottom = '5rem';
     }, 1000);
 };
