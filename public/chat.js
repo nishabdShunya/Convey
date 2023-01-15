@@ -24,34 +24,54 @@ async function loadUsers() {
     }
 }
 
-async function loadMessages() {
+function loadMessages() {
+    // Getting the latest 10 messages from the local storage
+    let oldMessages = [];
+    let lastMsgId = 0;
+    if (localStorage.getItem('msgs')) {
+        oldMessages = JSON.parse(localStorage.getItem('msgs'));
+        lastMsgId = oldMessages[oldMessages.length - 1].dataValues.id;
+    }
+    // Calling backend for new messages
     setInterval(async () => {
-        const response = await axios.get('http://localhost:3000/chat/get-msgs', {
+        const response = await axios.get(`http://localhost:3000/chat/get-msgs?lastMsgId=${lastMsgId}`, {
             headers: {
                 Authorization: localStorage.getItem('token')
             }
         });
-        const messages = response.data.messages;
+        const newMessages = response.data.messages;
+        const messages = [...oldMessages, ...newMessages];
+        // Displaying chat (latest 10 messages from local storage + new messages from backend) on screen
         chat.innerHTML = '';
         for (let message of messages) {
-            const time = message.dataValues.time;
-            const splittedTime = time.split(':');
-            const AMorPM = splittedTime[0] >= 12 ? 'PM' : 'AM';
-            const hour = splittedTime[0] % 12 || 12;
-            const finalTime = `${hour} : ${splittedTime[1]} ${AMorPM}`;
             const chatItem = `
             <li>
                 <p id="msg-by">${message.by}</p>
                 <div>
                     <p>${message.dataValues.msg}</p>
                 </div>    
-                <p id="msg-time">${message.dataValues.date} (${finalTime})</p>
+                <p id="msg-time">${message.dataValues.date} (${twelveHourClock(message.dataValues.time)})</p>
             </li>`;
             chat.innerHTML += chatItem;
         }
+        // Storing the latest 10 messages in the local storage
+        const numOfMsgs = messages.length;
+        const latestTenMsgs = [];
+        for (let i = numOfMsgs - 10; i <= numOfMsgs - 1; i++) {
+            latestTenMsgs.push(messages[i]);
+        }
+        localStorage.setItem('msgs', JSON.stringify(latestTenMsgs));
+        // Scrolling down to the latest chat
         const chatContainer = document.getElementById('chat-container');
         chatContainer.scrollTop = chatContainer.scrollHeight;
-    }, 1000)
+    }, 1000);
+}
+
+function twelveHourClock(time) {
+    const splittedTime = time.split(':');
+    const AMorPM = splittedTime[0] >= 12 ? 'PM' : 'AM';
+    const hour = splittedTime[0] % 12 || 12;
+    return `${hour} : ${splittedTime[1]} ${AMorPM}`;
 }
 
 sendMsgBtn.addEventListener('click', sendMessage);
@@ -76,9 +96,7 @@ function showMsgNotification(message) {
     const notificationDiv = document.getElementById('msg-notification');
     notificationDiv.innerHTML = `${message}`;
     notificationDiv.style.display = 'flex';
-    // chat.style.marginBottom = '0';
     setTimeout(() => {
         notificationDiv.style.display = 'none';
-        // chat.style.marginBottom = '5rem';
     }, 1000);
 };
