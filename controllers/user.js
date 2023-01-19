@@ -1,5 +1,7 @@
+const path = require('path');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
 const User = require('../models/user');
 
 exports.postAddUser = async (req, res, next) => {
@@ -18,7 +20,7 @@ exports.postAddUser = async (req, res, next) => {
                         phno: req.body.phno,
                         password: hash
                     });
-                    res.status(201).json({ success: true, message: 'Congratulations! You successfully signed up.' });
+                    res.status(201).json({ success: true, message: 'Please provide a profile picture.' });
                 });
             }
         }
@@ -26,6 +28,43 @@ exports.postAddUser = async (req, res, next) => {
         res.status(500).json({ success: false, message: 'Database operation failed. Please try again.' });
     }
 };
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'public/profilePics')
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname))
+    }
+})
+
+exports.upload = multer({
+    storage: storage,
+    limits: { fileSize: '1000000' },
+    fileFilter: (req, file, cb) => {
+        const fileTypes = /jpeg|jpg|png/
+        const mimeType = fileTypes.test(file.mimetype)
+        const extname = fileTypes.test(path.extname(file.originalname))
+        if (mimeType && extname) {
+            return cb(null, true)
+        }
+        cb('Give proper files format to upload.')
+    }
+}).single('profile_pic')
+
+exports.postAddProfilePic = async (req, res, next) => {
+    try {
+        const user = await User.findOne({ where: { email: req.body.email_copy } });
+        await user.update({ profile_pic: req.file.path });
+        res.status(201).json({
+            success: true,
+            message: 'Congratulations! You signed up successfully.',
+            profile_pic: req.file.path
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Database operation failed. Please try again.' });
+    }
+}
 
 exports.postLoginUser = async (req, res, next) => {
     try {

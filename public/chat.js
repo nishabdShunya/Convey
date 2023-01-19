@@ -1,5 +1,7 @@
 const otherUsersList = document.getElementById('other-users');
+const loggedUserImg = document.getElementById('logged-user-img');
 const loggedUser = document.getElementById('logged-user');
+const loggedUserEmail = document.getElementById('logged-user-email');
 const msgSent = document.getElementById('msg-sent');
 const sendMsgBtn = document.getElementById('send-msg-btn');
 const chat = document.getElementById('chat');
@@ -16,10 +18,12 @@ async function loadUsers() {
             Authorization: localStorage.getItem('token')
         }
     });
+    loggedUserImg.src = response.data.loggedUser.profile_pic.replace('public\\', '');
     loggedUser.innerText = `${response.data.loggedUser.name}`;
+    loggedUserEmail.innerText = `(${response.data.loggedUser.email})`;
     const otherUsers = response.data.otherUsers;
     for (let user of otherUsers) {
-        const otherUser = `<li>${user.name}</li>`;
+        const otherUser = `<li><img src="${user.profile_pic.replace('public\\', '')}">${user.name}</li>`;
         otherUsersList.innerHTML += otherUser;
     }
 }
@@ -98,5 +102,5 @@ function showMsgNotification(message) {
     notificationDiv.style.display = 'flex';
     setTimeout(() => {
         notificationDiv.style.display = 'none';
-    }, 1000);
+    }, 3000);
 };

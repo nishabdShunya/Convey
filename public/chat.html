@@ -15,17 +15,22 @@
 </head>
 
 <body>
-    <section id="users-section">
+    <section id="logged-user-section">
         <div id="logged-user-container">
             <div>
-                <img src="image.png" alt="convey-logo">
+                <img src="image.png" alt="convey-logo" id="convey-logo">
                 <h1>Convey</h1>
             </div>
+            <img src="profile.png" alt="logged-user-img" id="logged-user-img">
             <p id="logged-user"></p>
+            <p id="logged-user-email"></p>
         </div>
-        <div id="other-users-container">
-            <p>ONLINE</p>
-            <ul id="other-users"></ul>
+        <div id="your-groups-container">
+            <p>YOUR GROUPS<button title="Create a group">+</button></p>
+            <ul id="your-groups"></ul>
+        </div>
+        <div id="logout-container">
+            <button id="logout-btn">Logout</button>
         </div>
     </section>
     <section id="chat-section">
@@ -38,6 +43,12 @@
                 <input type="text" name="msg" id="msg-sent" placeholder="Message">
                 <button type="submit" id="send-msg-btn">Send</button>
             </form>
+        </div>
+    </section>
+    <section id="other-users-section">
+        <div id="other-users-container">
+            <p>ONLINE</p>
+            <ul id="other-users"></ul>
         </div>
     </section>
 </body>

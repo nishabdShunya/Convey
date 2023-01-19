@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Yatra One">
     <link rel="stylesheet" href="forms.css">
+    <link rel="stylesheet" href="profile.css">
     <script src="signup.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.2/axios.min.js" defer></script>
 </head>
@@ -30,6 +31,18 @@
         <button id="signup-btn">Sign Up</button>
     </form>
     <p class="para-after-form">Existing User?<a href="login.html">Login</a></p>
+    <div id="profile-pic-container">
+        <h1>Upload Your Profile Picture</h1>
+        <p>Please select an image (jpeg/jpg/png) and then click on upload.</p>
+        <form id="profile-pic-form" enctype="multipart/form-data">
+            <input type="hidden" name="email_copy">
+            <input type="file" name="profile_pic" id="profile-pic-file">
+            <button type="submit" id="upload-profile-pic-btn">Upload</button>
+        </form>
+        <div id="profile-pic-image-container">
+            <img src="./profile.png" alt="profile-pic" id="profile-pic-image">
+        </div>
+    </div>
 </body>
 
 </html>

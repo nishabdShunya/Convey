@@ -3,6 +3,9 @@ const email = document.getElementById('email');
 const phno = document.getElementById('phno');
 const password = document.getElementById('password');
 const signupBtn = document.getElementById('signup-btn');
+const profilePicContainer = document.getElementById('profile-pic-container');
+const profilePicForm = document.getElementById('profile-pic-form');
+const profilePicImage = document.getElementById('profile-pic-image');
 
 signupBtn.addEventListener('click', addUser);
 
@@ -25,9 +28,18 @@ async function addUser(event) {
                 showNotification(response.data.message);
             } else if (response.status === 201) {
                 showNotification(response.data.message);
-                setTimeout(() => {
-                    window.location.href = './login.html';
-                }, 3000);
+                profilePicContainer.style.display = 'flex';
+                profilePicForm.addEventListener('submit', async (event) => {
+                    event.preventDefault();
+                    let formData = new FormData(profilePicForm);
+                    formData.set('email_copy', userObj.email);
+                    const response = await axios.post('http://localhost:3000/user/add-profile-pic', formData);
+                    showNotification(response.data.message);
+                    profilePicImage.src = response.data.profile_pic.replace('public\\', '');
+                    setTimeout(() => {
+                        window.location.href = './login.html';
+                    }, 3000);
+                });
             } else {
                 showNotification('Something went wrong. Please try again.');
             }
