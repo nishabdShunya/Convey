@@ -13,6 +13,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
 });
 
 async function loadUsers() {
+    console.log(localStorage.getItem('token'));
     const response = await axios.get('http://localhost:3000/chat/online-users', {
         headers: {
             Authorization: localStorage.getItem('token')
@@ -28,7 +29,7 @@ async function loadUsers() {
     }
 }
 
-function loadMessages() {
+async function loadMessages() {
     // Getting the latest 10 messages from the local storage
     let oldMessages = [];
     let lastMsgId = 0;
@@ -36,8 +37,8 @@ function loadMessages() {
         oldMessages = JSON.parse(localStorage.getItem('msgs'));
         lastMsgId = oldMessages[oldMessages.length - 1].dataValues.id;
     }
+    console.log(localStorage.getItem('msgs'));
     // Calling backend for new messages
-    setInterval(async () => {
         const response = await axios.get(`http://localhost:3000/chat/get-msgs?lastMsgId=${lastMsgId}`, {
             headers: {
                 Authorization: localStorage.getItem('token')
@@ -68,7 +69,6 @@ function loadMessages() {
         // Scrolling down to the latest chat
         const chatContainer = document.getElementById('chat-container');
         chatContainer.scrollTop = chatContainer.scrollHeight;
-    }, 1000);
 }
 
 function twelveHourClock(time) {
@@ -91,6 +91,7 @@ async function sendMessage(event) {
             }
         });
         showMsgNotification(response.data.message);
+        loadMessages();
         // Clearing the message field
         msgSent.value = '';
     }

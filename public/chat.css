@@ -104,7 +104,7 @@ body {
     align-self: center;
     color:gray;
     font-weight: bold;
-    margin: 1rem 0 0 0;
+    margin: 1rem 0;
 }
 
 #your-groups {
@@ -305,12 +305,12 @@ input:-webkit-autofill {
     align-self: center;
     color:gray;
     font-weight: bold;
-    margin: 1rem 0 0 0;
+    margin: 1rem 0;
 }
 
 #other-users {
     border-radius: 0.5rem;
-    padding: 1rem 0 0 1rem;
+    padding: 1rem 1rem 0 2rem;
     margin: 0;
     list-style-type: none;
     display: flex;
