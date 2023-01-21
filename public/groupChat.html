@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convey</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Yatra One">
+    <link rel="stylesheet" href="groupChat.css">
+    <script src="groupChat.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.2/axios.min.js" defer></script>
+</head>
+
+<body>
+    <section id="group-section">
+        <div id="group-container">
+            <div>
+                <img src="image.png" alt="convey-logo" id="convey-logo">
+                <h1>Convey</h1>
+            </div>
+            <img src="profile.png" alt="group-img" id="group-img">
+            <p id="group-name"></p>
+            <p id="group-admin"></p>
+        </div>
+        <div id="close-group-container">
+            <button id="close-group-btn">Close Group</button>
+        </div>
+    </section>
+    <section id="chat-section">
+        <div id="chat-container">
+            <ul id="chat"></ul>
+        </div>
+        <div id="send-msg-container">
+            <p id="msg-notification"></p>
+            <form>
+                <input type="text" name="msg" id="msg-sent" placeholder="Message">
+                <button type="submit" id="send-msg-btn">Send</button>
+            </form>
+        </div>
+    </section>
+    <section id="group-users-section">
+        <div id="group-users-container">
+            <p>MEMBERS</p>
+            <ul id="group-users"></ul>
+        </div>
+    </section>
+</body>
+
+</html>

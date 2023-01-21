@@ -14,6 +14,8 @@ dotenv.config();
 const sequelize = require('./util/database');
 const userRoutes = require('./routes/user');
 const chatRoutes = require('./routes/chat');
+const groupRoutes = require('./routes/group');
+const groupChatRoutes = require('./routes/groupChat');
 const User = require('./models/user');
 const Message = require('./models/msg');
 const Group = require('./models/group');
@@ -29,12 +31,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Static images folder
-// app.use('public/profilePics', express.static('./public/profilePics'));
 app.use(express.static(path.join(__dirname, 'public/profilePics')));
 
 // Routes
 app.use('/user', userRoutes);
 app.use('/chat', chatRoutes);
+app.use('/group', groupRoutes);
+app.use('/groupChat', groupChatRoutes);
 
 // Associations
 User.hasMany(Message);

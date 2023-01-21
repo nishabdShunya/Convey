@@ -48,7 +48,7 @@ exports.upload = multer({
         if (mimeType && extname) {
             return cb(null, true)
         }
-        cb('Give proper files format to upload.')
+        cb('Give proper file format to upload.')
     }
 }).single('profile_pic')
 

@@ -5,6 +5,17 @@ const loggedUserEmail = document.getElementById('logged-user-email');
 const msgSent = document.getElementById('msg-sent');
 const sendMsgBtn = document.getElementById('send-msg-btn');
 const chat = document.getElementById('chat');
+const addMembers = document.getElementById('add-members');
+const createGroupBtn = document.getElementById('create-group-btn');
+const createGroupContainer = document.getElementById('create-group-container');
+const createGroupContainerCloseBtn = document.getElementById('create-group-container-close-btn');
+const createGroupFormBtn = document.getElementById('create-group-form-btn');
+const createGroupForm = document.getElementById('create-group-form');
+const groupPicContainer = document.getElementById('group-pic-container');
+const groupPicForm = document.getElementById('group-pic-form');
+const groupPicImage = document.getElementById('group-pic-image');
+const yourGroups = document.getElementById('your-groups');
+const logoutBtn = document.getElementById('logout-btn');
 
 window.addEventListener('DOMContentLoaded', (event) => {
     event.preventDefault();
@@ -13,43 +24,90 @@ window.addEventListener('DOMContentLoaded', (event) => {
 });
 
 async function loadUsers() {
-    console.log(localStorage.getItem('token'));
-    const response = await axios.get('http://localhost:3000/chat/online-users', {
-        headers: {
-            Authorization: localStorage.getItem('token')
+    try {
+        const response = await axios.get('http://localhost:3000/chat/online-users', {
+            headers: {
+                Authorization: localStorage.getItem('token')
+            }
+        });
+        if (response.status === 200) {
+            loggedUserImg.src = response.data.loggedUser.profile_pic.replace('public\\', '');
+            loggedUser.innerText = `${response.data.loggedUser.name}`;
+            loggedUserEmail.innerText = `(${response.data.loggedUser.email})`;
+            const loggedUserGroups = response.data.loggedUserGroups;
+            for (let group of loggedUserGroups) {
+                const groupLI = `<li><img src="${group.group_pic.replace('public\\', '')}">${group.name}</li>`;
+                yourGroups.innerHTML += groupLI;
+            }
+            const otherUsers = response.data.otherUsers;
+            for (let user of otherUsers) {
+                const otherUser = `<li><img src="${user.profile_pic.replace('public\\', '')}">${user.name}</li>`;
+                otherUsersList.innerHTML += otherUser;
+                const membersOptions = `<option value="${user.id}">${user.name}</option>`;
+                addMembers.innerHTML += membersOptions;
+            }
+            createCustomSelect();
+        } else {
+            showNotification('Something went wrong. Please try again.');
         }
-    });
-    loggedUserImg.src = response.data.loggedUser.profile_pic.replace('public\\', '');
-    loggedUser.innerText = `${response.data.loggedUser.name}`;
-    loggedUserEmail.innerText = `(${response.data.loggedUser.email})`;
-    const otherUsers = response.data.otherUsers;
-    for (let user of otherUsers) {
-        const otherUser = `<li><img src="${user.profile_pic.replace('public\\', '')}">${user.name}</li>`;
-        otherUsersList.innerHTML += otherUser;
+    } catch (error) {
+        showNotification(error.response.data.message);
     }
-}
+};
 
 async function loadMessages() {
-    // Getting the latest 10 messages from the local storage
-    let oldMessages = [];
-    let lastMsgId = 0;
-    if (localStorage.getItem('msgs')) {
-        oldMessages = JSON.parse(localStorage.getItem('msgs'));
-        lastMsgId = oldMessages[oldMessages.length - 1].dataValues.id;
-    }
-    console.log(localStorage.getItem('msgs'));
-    // Calling backend for new messages
+    try {
+        // Getting the latest 10 messages from the local storage
+        let oldMessages = [];
+        let lastMsgId = 0;
+        if(localStorage.getItem('msgs')){
+            if (JSON.parse(localStorage.getItem('msgs')).length !== 0) {
+                oldMessages = JSON.parse(localStorage.getItem('msgs'));
+                lastMsgId = oldMessages[oldMessages.length - 1].dataValues.id;
+            }
+        }
+        // Calling backend for new messages
         const response = await axios.get(`http://localhost:3000/chat/get-msgs?lastMsgId=${lastMsgId}`, {
             headers: {
                 Authorization: localStorage.getItem('token')
             }
         });
-        const newMessages = response.data.messages;
-        const messages = [...oldMessages, ...newMessages];
-        // Displaying chat (latest 10 messages from local storage + new messages from backend) on screen
-        chat.innerHTML = '';
-        for (let message of messages) {
-            const chatItem = `
+        if (response.status === 200) {
+            const newMessages = response.data.messages;
+            let messages = newMessages;
+            if (oldMessages.length > 0) {
+                messages = [...oldMessages, ...newMessages];
+            }
+            // Displaying chat (latest 10 messages from local storage + new messages from backend) on screen
+            displayMessages(messages);
+            // Storing the latest 10 messages in the local storage
+            const numOfMsgs = messages.length;
+            const latestTenMsgs = [];
+            if (numOfMsgs < 10) {
+                for (let i = 0; i < numOfMsgs; i++) {
+                    latestTenMsgs.push(messages[i]);
+                }
+            } else {
+                for (let i = numOfMsgs - 10; i < numOfMsgs; i++) {
+                    latestTenMsgs.push(messages[i]);
+                }
+            }
+            localStorage.setItem('msgs', JSON.stringify(latestTenMsgs));
+            // Scrolling down to the latest chat
+            const chatContainer = document.getElementById('chat-container');
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        } else {
+            showNotification('Something went wrong. Please try again.');
+        }
+    } catch (error) {
+        showNotification(error.response.data.message);
+    }
+};
+
+function displayMessages(messages) {
+    chat.innerHTML = '';
+    for (let message of messages) {
+        const chatItem = `
             <li>
                 <p id="msg-by">${message.by}</p>
                 <div>
@@ -57,45 +115,43 @@ async function loadMessages() {
                 </div>    
                 <p id="msg-time">${message.dataValues.date} (${twelveHourClock(message.dataValues.time)})</p>
             </li>`;
-            chat.innerHTML += chatItem;
-        }
-        // Storing the latest 10 messages in the local storage
-        const numOfMsgs = messages.length;
-        const latestTenMsgs = [];
-        for (let i = numOfMsgs - 10; i <= numOfMsgs - 1; i++) {
-            latestTenMsgs.push(messages[i]);
-        }
-        localStorage.setItem('msgs', JSON.stringify(latestTenMsgs));
-        // Scrolling down to the latest chat
-        const chatContainer = document.getElementById('chat-container');
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-}
+        chat.innerHTML += chatItem;
+    }
+};
 
 function twelveHourClock(time) {
     const splittedTime = time.split(':');
     const AMorPM = splittedTime[0] >= 12 ? 'PM' : 'AM';
     const hour = splittedTime[0] % 12 || 12;
     return `${hour} : ${splittedTime[1]} ${AMorPM}`;
-}
+};
 
 sendMsgBtn.addEventListener('click', sendMessage);
 
 async function sendMessage(event) {
     event.preventDefault();
-    if (msgSent.value === '') {
-        showMsgNotification('Please enter a message.');
-    } else {
-        const response = await axios.post('http://localhost:3000/chat/add-msg', { msgSent: msgSent.value }, {
-            headers: {
-                Authorization: localStorage.getItem('token')
+    try {
+        if (msgSent.value === '') {
+            showMsgNotification('Please enter a message.');
+        } else {
+            const response = await axios.post('http://localhost:3000/chat/add-msg', { msgSent: msgSent.value }, {
+                headers: {
+                    Authorization: localStorage.getItem('token')
+                }
+            });
+            if (response.status === 201) {
+                showMsgNotification(response.data.message);
+                loadMessages();
+                // Clearing the message field
+                msgSent.value = '';
+            } else {
+                showNotification('Something went wrong. Please try again.');
             }
-        });
-        showMsgNotification(response.data.message);
-        loadMessages();
-        // Clearing the message field
-        msgSent.value = '';
+        }
+    } catch (error) {
+        showNotification(error.response.data.message);
     }
-}
+};
 
 function showMsgNotification(message) {
     const notificationDiv = document.getElementById('msg-notification');
@@ -105,3 +161,128 @@ function showMsgNotification(message) {
         notificationDiv.style.display = 'none';
     }, 3000);
 };
+
+createGroupBtn.addEventListener('click', () => {
+    createGroupContainer.style.display = 'flex';
+});
+
+createGroupContainerCloseBtn.addEventListener('click', () => {
+    createGroupContainer.style.display = 'none';
+});
+
+createGroupForm.addEventListener('submit', createGroup);
+
+async function createGroup(event) {
+    event.preventDefault();
+    try {
+        if (document.getElementById('group-name').value === '') {
+            showNotification('Please provide your group a name.');
+        } else {
+            let createGroupFormData = new FormData(createGroupForm);
+            const groupObj = {
+                groupName: createGroupFormData.get('group_name'),
+                membersId: createGroupFormData.getAll('members')
+            }
+            const response = await axios.post('http://localhost:3000/group/add-group', groupObj, {
+                headers: { Authorization: localStorage.getItem('token') }
+            });
+            if (response.status === 400) {
+                showNotification(response.data.message);
+            } else if (response.status === 403) {
+                showNotification(response.data.message);
+            } else if (response.status === 201) {
+                showNotification(response.data.message);
+                groupPicContainer.style.display = 'flex';
+                groupPicForm.addEventListener('submit', async (event) => {
+                    event.preventDefault();
+                    try {
+                        let groupImageFormData = new FormData(groupPicForm);
+                        groupImageFormData.set('group_name', groupObj.groupName);
+                        const response = await axios.post('http://localhost:3000/group/add-group-pic', groupImageFormData);
+                        if (response.status === 201) {
+                            showNotification(response.data.message);
+                            groupPicImage.src = response.data.group_pic.replace('public\\', '');
+                            setTimeout(() => {
+                                window.location.href = './chat.html';
+                            }, 3000);
+                        } else {
+                            showNotification('Something went wrong. Please try again.')
+                        }
+                    } catch (error) {
+                        showNotification(error.response.data.message);
+                    }
+                });
+            } else {
+                showNotification('Something went wrong. Please try again.');
+            }
+        }
+    } catch (error) {
+        showNotification(error.response.data.message);
+    }
+};
+
+yourGroups.addEventListener('click', (event) => {
+    localStorage.setItem('groupName', event.target.innerText);
+    window.location.href = './groupChat.html';
+})
+
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.innerHTML = `${message}`;
+    notification.classList.add('notification');
+    document.body.appendChild(notification);
+    setTimeout(() => {
+        document.body.removeChild(notification);
+    }, 3000);
+};
+
+// Creating a copy of select element for selecting group members
+function createCustomSelect() {
+    class CustomSelect {
+        constructor(originalSelect) {
+            this.originalSelect = originalSelect;   // Grabbing the original select element
+            this.customSelect = document.createElement("div");  // Creating a copy of the original select element
+            this.customSelect.classList.add("select");
+            // Creating a copy of select options
+            this.originalSelect.querySelectorAll("option").forEach((optionElement) => {
+                const itemElement = document.createElement("div");
+                itemElement.classList.add("select__item");
+                itemElement.textContent = optionElement.textContent;
+                this.customSelect.appendChild(itemElement);
+                // Adding the toggle between selected and not selected
+                itemElement.addEventListener("click", () => {
+                    if (itemElement.classList.contains("select__item--selected")) {
+                        this._deselect(itemElement);
+                    } else {
+                        this._select(itemElement);
+                    }
+                });
+            });
+            this.originalSelect.insertAdjacentElement("afterend", this.customSelect);   // displaying the copy
+            this.originalSelect.style.display = "none";     // hiding the original
+        }
+        // Selecting the original option on selection of its copy
+        _select(itemElement) {
+            const index = Array.from(this.customSelect.children).indexOf(itemElement);
+            this.originalSelect.querySelectorAll("option")[index].selected = true;
+            itemElement.classList.add("select__item--selected");
+        }
+        // Deselecting the original option on de-selection of its copy
+        _deselect(itemElement) {
+            const index = Array.from(this.customSelect.children).indexOf(itemElement);
+            this.originalSelect.querySelectorAll("option")[index].selected = false;
+            itemElement.classList.remove("select__item--selected");
+        }
+    }
+    // Calling an instance of CustomSelect class on the original select element 
+    document.querySelectorAll(".custom-select").forEach((selectElement) => {
+        new CustomSelect(selectElement);
+    });
+};
+
+logoutBtn.addEventListener('click', (event)=>{
+    event.preventDefault();
+    localStorage.removeItem('token');
+    localStorage.removeItem('msgs');
+    window.location.href = './login.html';  
+})

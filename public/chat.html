@@ -26,8 +26,29 @@
             <p id="logged-user-email"></p>
         </div>
         <div id="your-groups-container">
-            <p>YOUR GROUPS<button title="Create a group">+</button></p>
+            <p>YOUR GROUPS<button title="Create a group" id="create-group-btn">+</button></p>
             <ul id="your-groups"></ul>
+        </div>
+        <div id="create-group-container">
+            <button id="create-group-container-close-btn">&times;</button>
+            <form id="create-group-form" enctype="multipart/form-data">
+                <input type="text" name="group_name" id="group-name" placeholder="Give your group a name">
+                <p>Select Group Members</p>
+                <select name="members" id="add-members" class="custom-select" multiple> </select>
+                <button type="submit" id="create-group-form-btn">Create Group</button>
+            </form>
+            <div id="group-pic-container">
+                <h1>Upload Your Group Picture</h1>
+                <p>Please select an image (jpeg/jpg/png) and then click on upload.</p>
+                <form id="group-pic-form" enctype="multipart/form-data">
+                    <input type="hidden" name="group_name">
+                    <input type="file" name="group_pic" id="group-pic-file">
+                    <button type="submit" id="upload-group-pic-btn">Upload</button>
+                </form>
+                <div id="group-pic-image-container">
+                    <img src="./profile.png" alt="group-pic" id="group-pic-image">
+                </div>
+            </div>
         </div>
         <div id="logout-container">
             <button id="logout-btn">Logout</button>

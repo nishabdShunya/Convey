@@ -31,14 +31,22 @@ async function addUser(event) {
                 profilePicContainer.style.display = 'flex';
                 profilePicForm.addEventListener('submit', async (event) => {
                     event.preventDefault();
-                    let formData = new FormData(profilePicForm);
-                    formData.set('email_copy', userObj.email);
-                    const response = await axios.post('http://localhost:3000/user/add-profile-pic', formData);
-                    showNotification(response.data.message);
-                    profilePicImage.src = response.data.profile_pic.replace('public\\', '');
-                    setTimeout(() => {
-                        window.location.href = './login.html';
-                    }, 3000);
+                    try {
+                        let formData = new FormData(profilePicForm);
+                        formData.set('email_copy', userObj.email);
+                        const response = await axios.post('http://localhost:3000/user/add-profile-pic', formData);
+                        if (response.status === 201) {
+                            showNotification(response.data.message);
+                            profilePicImage.src = response.data.profile_pic.replace('public\\', '');
+                            setTimeout(() => {
+                                window.location.href = './login.html';
+                            }, 3000);
+                        } else {
+                            showNotification('Something went wrong. Please try again.')
+                        }
+                    } catch (error) {
+                        showNotification(error.response.data.message);
+                    }
                 });
             } else {
                 showNotification('Something went wrong. Please try again.');
