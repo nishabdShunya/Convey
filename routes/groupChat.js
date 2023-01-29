@@ -12,4 +12,10 @@ router.post('/add-msg', authMiddleware.authenticate, groupChatController.postAdd
 
 router.get('/get-msgs/:chatGroup', authMiddleware.authenticate, groupChatController.getGroupMsgs);
 
+router.post('/make-admin', authMiddleware.authenticate, groupChatController.postMakeAdmin);
+
+router.delete('/remove-member/:groupAndUsersId', authMiddleware.authenticate, groupChatController.removeMember);
+
+router.post('/add-member', authMiddleware.authenticate, groupChatController.postAddMember);
+
 module.exports = router;

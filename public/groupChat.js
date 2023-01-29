@@ -6,6 +6,10 @@ const msgSent = document.getElementById('msg-sent');
 const sendMsgBtn = document.getElementById('send-msg-btn');
 const chat = document.getElementById('chat');
 const closeGroupBtn = document.getElementById('close-group-btn');
+const addMembersContainer = document.getElementById('add-members-container');
+const addMemberInputs = document.getElementById('input');
+const addMemberForm = document.getElementById('add-member-form');
+
 
 window.addEventListener('DOMContentLoaded', (event) => {
     event.preventDefault();
@@ -24,14 +28,14 @@ async function loadMembers() {
         if (response.status === 200) {
             groupImg.src = response.data.groupInfo.group_pic.replace('public\\', '');
             groupName.innerText = `${response.data.groupInfo.name}`;
-            groupAdmin.innerText = `Admin (Creator) : ${response.data.groupInfo.admin}`;
             const members = response.data.members;
-            for (let member of members) {
-                let groupMember = `<li><img src="${member.profile_pic.replace('public\\', '')}">${member.name}</li>`;
-                if (member.id === response.data.loggedUser.id) {
-                    groupMember = `<li><img src="${member.profile_pic.replace('public\\', '')}">${member.name}<span>YOU</span></li>`;
-                }
-                membersList.innerHTML += groupMember;
+            const loggedMember = members.filter(member => member.id === response.data.loggedUser.id)[0];
+            const otherMembers = members.filter(member => member.id !== response.data.loggedUser.id);
+            displayMembers(loggedMember, otherMembers);
+            const notMembers = response.data.notMembers;
+            addMemberInputs.innerHTML = '';
+            for (let notMember of notMembers) {
+                addMemberInputs.innerHTML += `<option value="${notMember.email}">${notMember.name}</option>`;
             }
         } else {
             showNotification('Something went wrong. Please try again.');
@@ -40,6 +44,111 @@ async function loadMembers() {
         showNotification(error.response.data.message);
     }
 };
+
+function displayMembers(loggedMember, otherMembers) {
+    membersList.innerHTML = '';
+    if (loggedMember.groupAndUsers.isAdmin) {
+        addMembersContainer.style.display = 'flex';
+        membersList.innerHTML += `
+        <li>
+            <div>
+                <img src="${loggedMember.profile_pic.replace('public\\', '')}">
+                ${loggedMember.name}
+                <span class="member">YOU</span>
+                <span class="admin">ADMIN</span>
+            </div>
+        </li>`;
+        for (let member of otherMembers) {
+            if (member.groupAndUsers.isAdmin) {
+                membersList.innerHTML += `
+                <li>
+                    <div>
+                        <img src="${member.profile_pic.replace('public\\', '')}">
+                        ${member.name}
+                        <span class="admin">ADMIN</span>
+                    </div>
+                </li>`;
+            } else {
+                membersList.innerHTML += `
+                <li>
+                    <div>
+                        <img src="${member.profile_pic.replace('public\\', '')}">
+                        ${member.name}
+                    </div>
+                    <div>
+                        <button class="make-admin-btn" title="Make Admin" onclick="makeAdmin('${member.groupAndUsers.id}')">+</button>
+                        <button class="remove-member-btn" title="Remove" onclick="removeMember('${member.groupAndUsers.id}')">&times;</button>
+                    </div>
+                </li>`;
+            }
+        }
+    } else {
+        membersList.innerHTML += `
+        <li>
+            <div>
+                <img src="${loggedMember.profile_pic.replace('public\\', '')}">
+                ${loggedMember.name}
+                <span class="member">YOU</span>
+            </div>
+        </li>`;
+        for (let member of otherMembers) {
+            if (member.groupAndUsers.isAdmin) {
+                membersList.innerHTML += `
+                <li>
+                    <div>
+                        <img src="${member.profile_pic.replace('public\\', '')}">
+                        ${member.name}
+                        <span class="admin">ADMIN</span>
+                    </div>
+                </li>`;
+            } else {
+                membersList.innerHTML += `
+                <li>
+                    <div>
+                        <img src="${member.profile_pic.replace('public\\', '')}">
+                        ${member.name}
+                    </div>
+                </li>`;
+            }
+        }
+    }
+}
+
+async function makeAdmin(groupAndUsersId) {
+    try {
+        const response = await axios.post('http://localhost:3000/groupChat/make-admin', { groupAndUsersId: groupAndUsersId }, {
+            headers: {
+                Authorization: localStorage.getItem('token')
+            }
+        });
+        if (response.status === 201) {
+            showNotification(`"${response.data.nameOfUserMadeAdmin}" made admin.`);
+            loadMembers();
+        } else {
+            showNotification('Something went wrong. Please try again.');
+        }
+    } catch (error) {
+        showNotification(error.response.data.message);
+    }
+}
+
+async function removeMember(groupAndUsersId) {
+    try {
+        const response = await axios.delete(`http://localhost:3000/groupChat/remove-member/${groupAndUsersId}`, {
+            headers: {
+                Authorization: localStorage.getItem('token')
+            }
+        });
+        if (response.status === 200) {
+            showNotification(`"${response.data.nameOfMemberRemoved}" removed from the group.`);
+            loadMembers();
+        } else {
+            showNotification('Something went wrong. Please try again.');
+        }
+    } catch (error) {
+        showNotification(error.response.data.message);
+    }
+}
 
 async function loadGroupMessages() {
     try {
@@ -150,6 +259,35 @@ function showMsgNotification(message) {
     }, 3000);
 };
 
+// For adding more members
+addMemberForm.addEventListener('submit', addMember);
+
+async function addMember(event) {
+    event.preventDefault();
+    try {
+        const addMemberFormData = new FormData(addMemberForm);
+        const addMemberObj = {
+            addMemberInput: addMemberFormData.get('add-member-input'),
+            groupName: localStorage.getItem('groupName')
+        }
+        const response = await axios.post('http://localhost:3000/groupChat/add-member', addMemberObj, {
+            headers: {
+                Authorization: localStorage.getItem('token')
+            }
+        });
+        if (response.status === 201) {
+            showNotification(`"${response.data.userAdded.name}" added to the group.`);
+            loadMembers();
+            // Clearing the input field
+            document.getElementsByName('add-member-input')[0].value = '';
+        } else {
+            showNotification('Something went wrong. Please try again.');
+        }
+    } catch (error) {
+        showNotification(error.response.data.message);
+    }
+};
+
 function showNotification(message) {
     const notification = document.createElement('div');
     notification.innerHTML = `${message}`;
@@ -165,4 +303,4 @@ closeGroupBtn.addEventListener('click', (event) => {
     localStorage.removeItem('groupName');
     localStorage.removeItem('groupMsgs');
     window.location.href = './chat.html';
-})
+});

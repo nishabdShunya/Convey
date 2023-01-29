@@ -2,16 +2,20 @@ const { Op } = require('sequelize');
 const Group = require('../models/group');
 const Message = require('../models/msg');
 const User = require('../models/user');
+const GroupAndUsers = require('../models/groupAndUsers');
 
 exports.getGroupMembers = async (req, res, next) => {
     try {
         const groupName = req.query.chatGroup;
         const currentGroup = await Group.findOne({ where: { name: groupName } });
         const members = await currentGroup.getUsers();
+        const allUsers = await User.findAll();
+        const notMembers = allUsers.filter(user => !members.filter(member => member.id === user.id).length);
         res.status(200).json({
             success: true,
             groupInfo: currentGroup,
             members: members,
+            notMembers: notMembers,
             loggedUser: req.loggedUser
         });
     } catch (error) {
@@ -51,6 +55,39 @@ exports.getGroupMsgs = async (req, res, next) => {
             groupMsgAndUser.push(modifiedMessage);
         }
         res.status(200).json({ success: true, messages: groupMsgAndUser });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Database operation failed. Please try again.' });
+    }
+}
+
+exports.postMakeAdmin = async (req, res, next) => {
+    try {
+        const groupAndUser = await GroupAndUsers.findOne({ where: { id: req.body.groupAndUsersId } });
+        await groupAndUser.update({ isAdmin: true });
+        const userMadeAdmin = await User.findOne({ where: { id: groupAndUser.userId } });
+        res.status(201).json({ success: true, nameOfUserMadeAdmin: userMadeAdmin.name });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Database operation failed. Please try again.' });
+    }
+}
+
+exports.removeMember = async (req, res, next) => {
+    try {
+        const groupAndUser = await GroupAndUsers.findOne({ where: { id: req.params.groupAndUsersId } });
+        const userBeingRemoved = await User.findOne({ where: { id: groupAndUser.userId } });
+        await GroupAndUsers.destroy({ where: { id: req.params.groupAndUsersId } });
+        res.status(200).json({ success: true, nameOfMemberRemoved: userBeingRemoved.name });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Database operation failed. Please try again.' });
+    }
+}
+
+exports.postAddMember = async (req, res, next) => {
+    try {
+        const userAdded = await User.findOne({ where: { email: req.body.addMemberInput } });
+        const addedToGroup = await Group.findOne({ where: { name: req.body.groupName } });
+        await addedToGroup.addUser(userAdded);
+        res.status(201).json({ success: true, userAdded: userAdded });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Database operation failed. Please try again.' });
     }

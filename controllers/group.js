@@ -12,11 +12,9 @@ exports.postAddGroup = async (req, res, next) => {
             if (group) {
                 res.status(403).json({ success: false, message: 'A group with this name already exist.' });
             } else {
-                const newGroup = await Group.create({
-                    name: req.body.groupName,
-                    admin: req.loggedUser.name
-                });
-                await newGroup.addUser(req.loggedUser);
+                const newGroup = await Group.create({ name: req.body.groupName });
+                console.log(req.loggedUser);
+                await newGroup.addUser(req.loggedUser, { through: { isAdmin: true } });
                 const membersId = req.body.membersId;
                 for (let memberId of membersId) {
                     const user = await User.findOne({ where: { id: memberId } });
@@ -59,7 +57,7 @@ exports.postAddGroupPic = async (req, res, next) => {
         await group.update({ group_pic: req.file.path });
         res.status(201).json({
             success: true,
-            message: `Group ${group.name} created successfully.`,
+            message: `Group "${group.name}" created successfully.`,
             group_pic: req.file.path,
         });
     } catch (error) {

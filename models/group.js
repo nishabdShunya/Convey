@@ -12,10 +12,6 @@ const Group = sequelize.define('group', {
         type: Sequelize.STRING,
         allowNull: false
     },
-    admin: {
-        type: Sequelize.STRING,
-        allowNull: false
-    },
     group_pic: Sequelize.STRING
 });
 
