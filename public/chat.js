@@ -25,7 +25,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
 async function loadUsers() {
     try {
-        const response = await axios.get('http://localhost:3000/chat/online-users', {
+        const response = await axios.get('http://35.77.46.89:3000/chat/online-users', {
             headers: {
                 Authorization: localStorage.getItem('token')
             }
@@ -67,7 +67,7 @@ async function loadMessages() {
             }
         }
         // Calling backend for new messages
-        const response = await axios.get(`http://localhost:3000/chat/get-msgs?lastMsgId=${lastMsgId}`, {
+        const response = await axios.get(`http://35.77.46.89:3000/chat/get-msgs?lastMsgId=${lastMsgId}`, {
             headers: {
                 Authorization: localStorage.getItem('token')
             }
@@ -134,7 +134,7 @@ async function sendMessage(event) {
         if (msgSent.value === '') {
             showMsgNotification('Please enter a message.');
         } else {
-            const response = await axios.post('http://localhost:3000/chat/add-msg', { msgSent: msgSent.value }, {
+            const response = await axios.post('http://35.77.46.89:3000/chat/add-msg', { msgSent: msgSent.value }, {
                 headers: {
                     Authorization: localStorage.getItem('token')
                 }
@@ -183,7 +183,7 @@ async function createGroup(event) {
                 groupName: createGroupFormData.get('group_name'),
                 membersId: createGroupFormData.getAll('members')
             }
-            const response = await axios.post('http://localhost:3000/group/add-group', groupObj, {
+            const response = await axios.post('http://35.77.46.89:3000/group/add-group', groupObj, {
                 headers: { Authorization: localStorage.getItem('token') }
             });
             if (response.status === 400) {
@@ -198,7 +198,7 @@ async function createGroup(event) {
                     try {
                         let groupImageFormData = new FormData(groupPicForm);
                         groupImageFormData.set('group_name', groupObj.groupName);
-                        const response = await axios.post('http://localhost:3000/group/add-group-pic', groupImageFormData);
+                        const response = await axios.post('http://35.77.46.89:3000/group/add-group-pic', groupImageFormData);
                         if (response.status === 201) {
                             showNotification(response.data.message);
                             groupPicImage.src = `../${response.data.group_pic}`;
