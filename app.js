@@ -29,7 +29,7 @@ app.use(cors({
 app.use(bodyParser.json());
 
 // Static images folder
-app.use(express.static(path.join(__dirname, '/uploads')));
+app.use('/uploads', express.static('uploads'));
 
 // Routes
 app.use('/user', userRoutes);
