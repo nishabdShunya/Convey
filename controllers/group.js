@@ -30,7 +30,7 @@ exports.postAddGroup = async (req, res, next) => {
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'public/groupPics')
+        cb(null, 'uploads/groupPics/')
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + path.extname(file.originalname))

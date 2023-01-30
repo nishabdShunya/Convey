@@ -31,7 +31,7 @@ exports.postAddUser = async (req, res, next) => {
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'public/profilePics')
+        cb(null, 'uploads/profilePics/')
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + path.extname(file.originalname))

@@ -20,13 +20,13 @@ window.addEventListener('DOMContentLoaded', (event) => {
 async function loadMembers() {
     try {
         const chatGroup = localStorage.getItem('groupName');
-        const response = await axios.get(`http://35.77.46.89:3000/groupChat/members?chatGroup=${chatGroup}`, {
+        const response = await axios.get(`http://localhost:3000/groupChat/members?chatGroup=${chatGroup}`, {
             headers: {
                 Authorization: localStorage.getItem('token')
             }
         });
         if (response.status === 200) {
-            groupImg.src = response.data.groupInfo.group_pic.replace('public\\', '');
+            groupImg.src = `../${response.data.groupInfo.group_pic}`;
             groupName.innerText = `${response.data.groupInfo.name}`;
             const members = response.data.members;
             const loggedMember = members.filter(member => member.id === response.data.loggedUser.id)[0];
@@ -52,7 +52,7 @@ function displayMembers(loggedMember, otherMembers) {
         membersList.innerHTML += `
         <li>
             <div>
-                <img src="${loggedMember.profile_pic.replace('public\\', '')}">
+                <img src="../${loggedMember.profile_pic}">
                 ${loggedMember.name}
                 <span class="member">YOU</span>
                 <span class="admin">ADMIN</span>
@@ -63,7 +63,7 @@ function displayMembers(loggedMember, otherMembers) {
                 membersList.innerHTML += `
                 <li>
                     <div>
-                        <img src="${member.profile_pic.replace('public\\', '')}">
+                        <img src="../${member.profile_pic}">
                         ${member.name}
                         <span class="admin">ADMIN</span>
                     </div>
@@ -72,7 +72,7 @@ function displayMembers(loggedMember, otherMembers) {
                 membersList.innerHTML += `
                 <li>
                     <div>
-                        <img src="${member.profile_pic.replace('public\\', '')}">
+                        <img src="../${member.profile_pic}">
                         ${member.name}
                     </div>
                     <div>
@@ -86,7 +86,7 @@ function displayMembers(loggedMember, otherMembers) {
         membersList.innerHTML += `
         <li>
             <div>
-                <img src="${loggedMember.profile_pic.replace('public\\', '')}">
+                <img src="../${loggedMember.profile_pic}">
                 ${loggedMember.name}
                 <span class="member">YOU</span>
             </div>
@@ -96,7 +96,7 @@ function displayMembers(loggedMember, otherMembers) {
                 membersList.innerHTML += `
                 <li>
                     <div>
-                        <img src="${member.profile_pic.replace('public\\', '')}">
+                        <img src="../${member.profile_pic}">
                         ${member.name}
                         <span class="admin">ADMIN</span>
                     </div>
@@ -105,7 +105,7 @@ function displayMembers(loggedMember, otherMembers) {
                 membersList.innerHTML += `
                 <li>
                     <div>
-                        <img src="${member.profile_pic.replace('public\\', '')}">
+                        <img src="../${member.profile_pic}">
                         ${member.name}
                     </div>
                 </li>`;
@@ -116,7 +116,7 @@ function displayMembers(loggedMember, otherMembers) {
 
 async function makeAdmin(groupAndUsersId) {
     try {
-        const response = await axios.post('http://35.77.46.89:3000/groupChat/make-admin', { groupAndUsersId: groupAndUsersId }, {
+        const response = await axios.post('http://localhost:3000/groupChat/make-admin', { groupAndUsersId: groupAndUsersId }, {
             headers: {
                 Authorization: localStorage.getItem('token')
             }
@@ -134,7 +134,7 @@ async function makeAdmin(groupAndUsersId) {
 
 async function removeMember(groupAndUsersId) {
     try {
-        const response = await axios.delete(`http://35.77.46.89:3000/groupChat/remove-member/${groupAndUsersId}`, {
+        const response = await axios.delete(`http://localhost:3000/groupChat/remove-member/${groupAndUsersId}`, {
             headers: {
                 Authorization: localStorage.getItem('token')
             }
@@ -163,7 +163,7 @@ async function loadGroupMessages() {
         }
         // Calling backend for new messages
         const chatGroup = localStorage.getItem('groupName');
-        const response = await axios.get(`http://35.77.46.89:3000/groupChat/get-msgs/${chatGroup}?lastMsgId=${lastMsgId}`, {
+        const response = await axios.get(`http://localhost:3000/groupChat/get-msgs/${chatGroup}?lastMsgId=${lastMsgId}`, {
             headers: {
                 Authorization: localStorage.getItem('token')
             }
@@ -231,7 +231,7 @@ async function sendMessage(event) {
             showMsgNotification('Please enter a message.');
         } else {
             const chatGroup = localStorage.getItem('groupName');
-            const response = await axios.post(`http://35.77.46.89:3000/groupChat/add-msg?chatGroup=${chatGroup}`, { msgSent: msgSent.value }, {
+            const response = await axios.post(`http://localhost:3000/groupChat/add-msg?chatGroup=${chatGroup}`, { msgSent: msgSent.value }, {
                 headers: {
                     Authorization: localStorage.getItem('token')
                 }
@@ -270,7 +270,7 @@ async function addMember(event) {
             addMemberInput: addMemberFormData.get('add-member-input'),
             groupName: localStorage.getItem('groupName')
         }
-        const response = await axios.post('http://35.77.46.89:3000/groupChat/add-member', addMemberObj, {
+        const response = await axios.post('http://localhost:3000/groupChat/add-member', addMemberObj, {
             headers: {
                 Authorization: localStorage.getItem('token')
             }

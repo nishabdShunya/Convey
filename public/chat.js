@@ -25,23 +25,23 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
 async function loadUsers() {
     try {
-        const response = await axios.get('http://35.77.46.89:3000/chat/online-users', {
+        const response = await axios.get('http://localhost:3000/chat/online-users', {
             headers: {
                 Authorization: localStorage.getItem('token')
             }
         });
         if (response.status === 200) {
-            loggedUserImg.src = response.data.loggedUser.profile_pic.replace('public\\', '');
+            loggedUserImg.src = `../${response.data.loggedUser.profile_pic}`;
             loggedUser.innerText = `${response.data.loggedUser.name}`;
             loggedUserEmail.innerText = `(${response.data.loggedUser.email})`;
             const loggedUserGroups = response.data.loggedUserGroups;
             for (let group of loggedUserGroups) {
-                const groupLI = `<li><img src="${group.group_pic.replace('public\\', '')}">${group.name}</li>`;
+                const groupLI = `<li><img src="../${group.group_pic}">${group.name}</li>`;
                 yourGroups.innerHTML += groupLI;
             }
             const otherUsers = response.data.otherUsers;
             for (let user of otherUsers) {
-                const otherUser = `<li><img src="${user.profile_pic.replace('public\\', '')}">${user.name}</li>`;
+                const otherUser = `<li><img src="../${user.profile_pic}">${user.name}</li>`;
                 otherUsersList.innerHTML += otherUser;
                 const membersOptions = `<option value="${user.id}">${user.name}</option>`;
                 addMembers.innerHTML += membersOptions;
@@ -60,14 +60,14 @@ async function loadMessages() {
         // Getting the latest 10 messages from the local storage
         let oldMessages = [];
         let lastMsgId = 0;
-        if(localStorage.getItem('msgs')){
+        if (localStorage.getItem('msgs')) {
             if (JSON.parse(localStorage.getItem('msgs')).length !== 0) {
                 oldMessages = JSON.parse(localStorage.getItem('msgs'));
                 lastMsgId = oldMessages[oldMessages.length - 1].dataValues.id;
             }
         }
         // Calling backend for new messages
-        const response = await axios.get(`http://35.77.46.89:3000/chat/get-msgs?lastMsgId=${lastMsgId}`, {
+        const response = await axios.get(`http://localhost:3000/chat/get-msgs?lastMsgId=${lastMsgId}`, {
             headers: {
                 Authorization: localStorage.getItem('token')
             }
@@ -134,7 +134,7 @@ async function sendMessage(event) {
         if (msgSent.value === '') {
             showMsgNotification('Please enter a message.');
         } else {
-            const response = await axios.post('http://35.77.46.89:3000/chat/add-msg', { msgSent: msgSent.value }, {
+            const response = await axios.post('http://localhost:3000/chat/add-msg', { msgSent: msgSent.value }, {
                 headers: {
                     Authorization: localStorage.getItem('token')
                 }
@@ -169,7 +169,7 @@ createGroupBtn.addEventListener('click', () => {
 createGroupContainerCloseBtn.addEventListener('click', () => {
     createGroupContainer.style.display = 'none';
 });
-ation
+
 createGroupForm.addEventListener('submit', createGroup);
 
 async function createGroup(event) {
@@ -183,7 +183,7 @@ async function createGroup(event) {
                 groupName: createGroupFormData.get('group_name'),
                 membersId: createGroupFormData.getAll('members')
             }
-            const response = await axios.post('http://35.77.46.89:3000/group/add-group', groupObj, {
+            const response = await axios.post('http://localhost:3000/group/add-group', groupObj, {
                 headers: { Authorization: localStorage.getItem('token') }
             });
             if (response.status === 400) {
@@ -198,10 +198,10 @@ async function createGroup(event) {
                     try {
                         let groupImageFormData = new FormData(groupPicForm);
                         groupImageFormData.set('group_name', groupObj.groupName);
-                        const response = await axios.post('http://35.77.46.89:3000/group/add-group-pic', groupImageFormData);
+                        const response = await axios.post('http://localhost:3000/group/add-group-pic', groupImageFormData);
                         if (response.status === 201) {
                             showNotification(response.data.message);
-                            groupPicImage.src = response.data.group_pic.replace('public\\', '');
+                            groupPicImage.src = `../${response.data.group_pic}`;
                             setTimeout(() => {
                                 window.location.href = './chat.html';
                             }, 3000);
@@ -280,9 +280,9 @@ function createCustomSelect() {
     });
 };
 
-logoutBtn.addEventListener('click', (event)=>{
+logoutBtn.addEventListener('click', (event) => {
     event.preventDefault();
     localStorage.removeItem('token');
     localStorage.removeItem('msgs');
-    window.location.href = './login.html';  
+    window.location.href = './login.html';
 })

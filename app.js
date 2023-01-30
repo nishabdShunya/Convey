@@ -27,17 +27,19 @@ app.use(cors({
     methods: ['POST', 'GET', 'PUT', 'PATCH', 'DELETE', 'HEAD']
 }));
 app.use(bodyParser.json());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 // Static images folder
-app.use(express.static(path.join(__dirname, 'public/profilePics')));
+app.use(express.static(path.join(__dirname, '/uploads')));
 
 // Routes
 app.use('/user', userRoutes);
 app.use('/chat', chatRoutes);
 app.use('/group', groupRoutes);
 app.use('/groupChat', groupChatRoutes);
+
+app.use((req, res, next) => {
+    res.sendFile(path.join(__dirname, `public/${req.url}`));
+});
 
 // Associations
 User.hasMany(Message);
