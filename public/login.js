@@ -14,7 +14,7 @@ async function loginUser(event) {
                 email: email.value,
                 password: password.value
             }
-            const response = await axios.post('http://localhost:3000/user/login-user', loginDetails);
+            const response = await axios.post('http://18.183.40.94:3000/user/login-user', loginDetails);
             if (response.status === 400 || response.status === 401 || response.status === 404) {
                 showNotification(response.data.message);
             } else if (response.status === 201) {

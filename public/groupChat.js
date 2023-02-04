@@ -19,7 +19,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
 async function loadMembers() {
     try {
         const chatGroup = localStorage.getItem('groupName');
-        const response = await axios.get(`http://localhost:3000/groupChat/members?chatGroup=${chatGroup}`, {
+        const response = await axios.get(`http://18.183.40.94:3000/groupChat/members?chatGroup=${chatGroup}`, {
             headers: {
                 Authorization: localStorage.getItem('token')
             }
@@ -119,7 +119,7 @@ function displayMembers(loggedMember, otherMembers) {
 
 async function makeAdmin(groupAndUsersId) {
     try {
-        const response = await axios.post('http://localhost:3000/groupChat/make-admin', { groupAndUsersId: groupAndUsersId }, {
+        const response = await axios.post('http://18.183.40.94:3000/groupChat/make-admin', { groupAndUsersId: groupAndUsersId }, {
             headers: {
                 Authorization: localStorage.getItem('token')
             }
@@ -137,7 +137,7 @@ async function makeAdmin(groupAndUsersId) {
 
 async function removeMember(groupAndUsersId) {
     try {
-        const response = await axios.delete(`http://localhost:3000/groupChat/remove-member/${groupAndUsersId}`, {
+        const response = await axios.delete(`http://18.183.40.94:3000/groupChat/remove-member/${groupAndUsersId}`, {
             headers: {
                 Authorization: localStorage.getItem('token')
             }
@@ -166,7 +166,7 @@ async function loadGroupMessages() {
         }
         // Calling backend for new messages
         const chatGroup = localStorage.getItem('groupName');
-        const response = await axios.get(`http://localhost:3000/groupChat/get-msgs/${chatGroup}?lastMsgId=${lastMsgId}`, {
+        const response = await axios.get(`http://18.183.40.94:3000/groupChat/get-msgs/${chatGroup}?lastMsgId=${lastMsgId}`, {
             headers: {
                 Authorization: localStorage.getItem('token')
             }
@@ -245,7 +245,7 @@ async function sendMessage(event) {
     try {
         const sendMsgFormData = new FormData(sendMsgForm);
         const chatGroup = localStorage.getItem('groupName');
-        const response = await axios.post(`http://localhost:3000/groupChat/add-msg?chatGroup=${chatGroup}`, sendMsgFormData, {
+        const response = await axios.post(`http://18.183.40.94:3000/groupChat/add-msg?chatGroup=${chatGroup}`, sendMsgFormData, {
             headers: {
                 Authorization: localStorage.getItem('token')
             }
@@ -284,7 +284,7 @@ async function addMember(event) {
             addMemberInput: addMemberFormData.get('add-member-input'),
             groupName: localStorage.getItem('groupName')
         }
-        const response = await axios.post('http://localhost:3000/groupChat/add-member', addMemberObj, {
+        const response = await axios.post('http://18.183.40.94:3000/groupChat/add-member', addMemberObj, {
             headers: {
                 Authorization: localStorage.getItem('token')
             }
