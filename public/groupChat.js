@@ -2,8 +2,7 @@ const membersList = document.getElementById('group-users');
 const groupImg = document.getElementById('group-img');
 const groupName = document.getElementById('group-name');
 const groupAdmin = document.getElementById('group-admin');
-const msgSent = document.getElementById('msg-sent');
-const sendMsgBtn = document.getElementById('send-msg-btn');
+const sendMsgForm = document.getElementById('send-msg-form');
 const chat = document.getElementById('chat');
 const closeGroupBtn = document.getElementById('close-group-btn');
 const addMembersContainer = document.getElementById('add-members-container');
@@ -20,7 +19,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
 async function loadMembers() {
     try {
         const chatGroup = localStorage.getItem('groupName');
-        const response = await axios.get(`http://18.183.40.94:3000/groupChat/members?chatGroup=${chatGroup}`, {
+        const response = await axios.get(`http://localhost:3000/groupChat/members?chatGroup=${chatGroup}`, {
             headers: {
                 Authorization: localStorage.getItem('token')
             }
@@ -52,7 +51,7 @@ function displayMembers(loggedMember, otherMembers) {
         membersList.innerHTML += `
         <li>
             <div>
-                <img src="../${loggedMember.profile_pic}">
+                <img src="../${loggedMember.profile_pic}" class="group-user-img">
                 ${loggedMember.name}
                 <span class="member">YOU</span>
                 <span class="admin">ADMIN</span>
@@ -63,7 +62,7 @@ function displayMembers(loggedMember, otherMembers) {
                 membersList.innerHTML += `
                 <li>
                     <div>
-                        <img src="../${member.profile_pic}">
+                        <img src="../${member.profile_pic}" class="group-user-img">
                         ${member.name}
                         <span class="admin">ADMIN</span>
                     </div>
@@ -72,12 +71,16 @@ function displayMembers(loggedMember, otherMembers) {
                 membersList.innerHTML += `
                 <li>
                     <div>
-                        <img src="../${member.profile_pic}">
+                        <img src="../${member.profile_pic}" class="group-user-img">
                         ${member.name}
                     </div>
                     <div>
-                        <button class="make-admin-btn" title="Make Admin" onclick="makeAdmin('${member.groupAndUsers.id}')">+</button>
-                        <button class="remove-member-btn" title="Remove" onclick="removeMember('${member.groupAndUsers.id}')">&times;</button>
+                        <button class="make-admin-btn" title="Make Admin" onclick="makeAdmin('${member.groupAndUsers.id}')">
+                            <img src="./MA.png" class="make-admin-btn-img">
+                        </button>
+                        <button class="remove-member-btn" title="Remove" onclick="removeMember('${member.groupAndUsers.id}')">
+                            <img src="./RM.png" class="remove-member-btn-img">
+                        </button>
                     </div>
                 </li>`;
             }
@@ -86,7 +89,7 @@ function displayMembers(loggedMember, otherMembers) {
         membersList.innerHTML += `
         <li>
             <div>
-                <img src="../${loggedMember.profile_pic}">
+                <img src="../${loggedMember.profile_pic}" class="group-user-img">
                 ${loggedMember.name}
                 <span class="member">YOU</span>
             </div>
@@ -96,7 +99,7 @@ function displayMembers(loggedMember, otherMembers) {
                 membersList.innerHTML += `
                 <li>
                     <div>
-                        <img src="../${member.profile_pic}">
+                        <img src="../${member.profile_pic}" class="group-user-img">
                         ${member.name}
                         <span class="admin">ADMIN</span>
                     </div>
@@ -105,7 +108,7 @@ function displayMembers(loggedMember, otherMembers) {
                 membersList.innerHTML += `
                 <li>
                     <div>
-                        <img src="../${member.profile_pic}">
+                        <img src="../${member.profile_pic}" class="group-user-img">
                         ${member.name}
                     </div>
                 </li>`;
@@ -116,7 +119,7 @@ function displayMembers(loggedMember, otherMembers) {
 
 async function makeAdmin(groupAndUsersId) {
     try {
-        const response = await axios.post('http://18.183.40.94:3000/groupChat/make-admin', { groupAndUsersId: groupAndUsersId }, {
+        const response = await axios.post('http://localhost:3000/groupChat/make-admin', { groupAndUsersId: groupAndUsersId }, {
             headers: {
                 Authorization: localStorage.getItem('token')
             }
@@ -134,7 +137,7 @@ async function makeAdmin(groupAndUsersId) {
 
 async function removeMember(groupAndUsersId) {
     try {
-        const response = await axios.delete(`http://18.183.40.94:3000/groupChat/remove-member/${groupAndUsersId}`, {
+        const response = await axios.delete(`http://localhost:3000/groupChat/remove-member/${groupAndUsersId}`, {
             headers: {
                 Authorization: localStorage.getItem('token')
             }
@@ -163,7 +166,7 @@ async function loadGroupMessages() {
         }
         // Calling backend for new messages
         const chatGroup = localStorage.getItem('groupName');
-        const response = await axios.get(`http://18.183.40.94:3000/groupChat/get-msgs/${chatGroup}?lastMsgId=${lastMsgId}`, {
+        const response = await axios.get(`http://localhost:3000/groupChat/get-msgs/${chatGroup}?lastMsgId=${lastMsgId}`, {
             headers: {
                 Authorization: localStorage.getItem('token')
             }
@@ -203,7 +206,8 @@ async function loadGroupMessages() {
 function displayMessages(messages) {
     chat.innerHTML = '';
     for (let message of messages) {
-        const chatItem = `
+        if (message.dataValues.fileURL === null) {
+            const chatItem = `
             <li>
                 <p id="msg-by">${message.by}</p>
                 <div>
@@ -211,7 +215,19 @@ function displayMessages(messages) {
                 </div>    
                 <p id="msg-time">${message.dataValues.date} (${twelveHourClock(message.dataValues.time)})</p>
             </li>`;
-        chat.innerHTML += chatItem;
+            chat.innerHTML += chatItem;
+        } else {
+            const chatItem = `
+            <li>
+                <p id="msg-by">${message.by}</p>
+                <div>
+                    <img src="${message.dataValues.fileURL}">
+                    <p>${message.dataValues.msg}</p>
+                </div>    
+                <p id="msg-time">${message.dataValues.date} (${twelveHourClock(message.dataValues.time)})</p>
+            </li>`;
+            chat.innerHTML += chatItem;
+        }
     }
 };
 
@@ -222,28 +238,26 @@ function twelveHourClock(time) {
     return `${hour} : ${splittedTime[1]} ${AMorPM}`;
 };
 
-sendMsgBtn.addEventListener('click', sendMessage);
+sendMsgForm.addEventListener('submit', sendMessage);
 
 async function sendMessage(event) {
     event.preventDefault();
     try {
-        if (msgSent.value === '') {
-            showMsgNotification('Please enter a message.');
-        } else {
-            const chatGroup = localStorage.getItem('groupName');
-            const response = await axios.post(`http://18.183.40.94:3000/groupChat/add-msg?chatGroup=${chatGroup}`, { msgSent: msgSent.value }, {
-                headers: {
-                    Authorization: localStorage.getItem('token')
-                }
-            });
-            if (response.status === 201) {
-                showMsgNotification(response.data.message);
-                loadGroupMessages();
-                // Clearing the message field
-                msgSent.value = '';
-            } else {
-                showNotification('Something went wrong. Please try again.');
+        const sendMsgFormData = new FormData(sendMsgForm);
+        const chatGroup = localStorage.getItem('groupName');
+        const response = await axios.post(`http://localhost:3000/groupChat/add-msg?chatGroup=${chatGroup}`, sendMsgFormData, {
+            headers: {
+                Authorization: localStorage.getItem('token')
             }
+        });
+        if (response.status === 201) {
+            showMsgNotification(response.data.message);
+            loadGroupMessages();
+            // Clearing the fields
+            sendMsgForm.reset();
+            // document.getElementById('msg-sent').value = '';
+        } else {
+            showNotification('Something went wrong. Please try again.');
         }
     } catch (error) {
         showNotification(error.response.data.message);
@@ -270,7 +284,7 @@ async function addMember(event) {
             addMemberInput: addMemberFormData.get('add-member-input'),
             groupName: localStorage.getItem('groupName')
         }
-        const response = await axios.post('http://18.183.40.94:3000/groupChat/add-member', addMemberObj, {
+        const response = await axios.post('http://localhost:3000/groupChat/add-member', addMemberObj, {
             headers: {
                 Authorization: localStorage.getItem('token')
             }

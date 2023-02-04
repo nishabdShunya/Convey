@@ -4,7 +4,7 @@
     bottom: 0;
     right: 0;
     left: 0;
-    padding: 5rem;
+    padding: 2rem;
     background-color: rgb(22, 27, 34);
     display: none;
     flex-direction: column;
@@ -18,12 +18,15 @@
     text-align: center;
 }
 
+#profile-pic-container p {
+    margin: 1rem 0;
+}
+
 #profile-pic-form {
     height: 15%;
     width: 50%;
     padding: 1%;
     border: none;
-    border-radius: 1rem;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -42,7 +45,6 @@
 ::-webkit-file-upload-button {
     border: none;
     padding: 1.5rem;
-    border-radius: 1rem;
     color: white;
     background-color: rgb(22, 27, 34);
     cursor: pointer;
@@ -52,16 +54,14 @@
     padding: 1.25rem;
     margin: 0;
     border: none;
-    border-radius: 1rem;
-    color:rgb(22, 27, 34);
+    color: rgb(22, 27, 34);
     background: linear-gradient(45deg, rgb(255, 206, 86), rgb(130, 195, 95));
     cursor: pointer;
 }
 
 #profile-pic-image-container {
-    height: 60%;
-    /* width: 50%; */
-    padding: 1%;
+    height: 50%;
+    padding: 2%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -70,6 +70,6 @@
 #profile-pic-image {
     height: 100%;
     width: 100%;
-    border-radius: 25%;
+    border-radius: 5%;
     background-color: rgb(33, 38, 45);
 }

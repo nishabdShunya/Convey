@@ -12,6 +12,7 @@ const Message = sequelize.define('message', {
         type: Sequelize.STRING,
         allowNull: false
     },
+    fileURL: Sequelize.STRING,
     date: Sequelize.STRING,
     time: Sequelize.STRING
 },

@@ -21,7 +21,7 @@ async function addUser(event) {
                 phno: phno.value,
                 password: password.value
             }
-            const response = await axios.post('http://18.183.40.94:3000/user/add-user', userObj);
+            const response = await axios.post('http://localhost:3000/user/add-user', userObj);
             if (response.status === 400) {
                 showNotification(response.data.message);
             } else if (response.status === 403) {
@@ -34,7 +34,7 @@ async function addUser(event) {
                     try {
                         let formData = new FormData(profilePicForm);
                         formData.set('email_copy', userObj.email);
-                        const response = await axios.post('http://18.183.40.94:3000/user/add-profile-pic', formData);
+                        const response = await axios.post('http://localhost:3000/user/add-profile-pic', formData);
                         if (response.status === 201) {
                             showNotification(response.data.message);
                             profilePicImage.src = `/${response.data.profile_pic}`;

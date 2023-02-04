@@ -9,7 +9,7 @@
 html {
     box-sizing: border-box;
     font-family: 'Quicksand';
-    font-size: 10px;
+    font-size: 8.5px;
 }
 
 body {
@@ -38,11 +38,12 @@ body {
 
 #logged-user-container {
     height: 40%;
-    margin-bottom: 5%;
+    padding-bottom: 1rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background-color: rgb(13, 17, 23);
 }
 
 #logged-user-container div {
@@ -52,8 +53,8 @@ body {
 }
 
 #convey-logo {
-    height: 3.5rem;
-    width: 3.5rem;
+    height: 3rem;
+    width: 3rem;
 }
 
 #logged-user-container h1 {
@@ -72,9 +73,10 @@ body {
 }
 
 #logged-user-img {
-    width: 14rem;
-    height: 14rem;
-    border-radius: 50%;
+    width: 15rem;
+    height: 15rem;
+    border-radius: 5%;
+    margin: 0.5rem;
 }
 
 #logged-user-container p {
@@ -97,19 +99,21 @@ body {
     justify-content: flex-start;
     align-items: center;
     background-color: rgb(13, 17, 23);
-    border-radius: 1rem;
 }
 
 #your-groups-container p {
-    align-self: center;
     color: gray;
     font-weight: bold;
+    width: 100%;
     margin: 1rem 0;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 #your-groups {
     width: 100%;
-    border-radius: 0.5rem;
     padding: 1rem 1rem 0 2rem;
     margin: 0;
     list-style-type: none;
@@ -123,7 +127,6 @@ body {
 #your-groups li {
     padding: 0.5rem;
     margin-bottom: 1rem;
-    border-radius: 0.5rem;
     background-color: rgb(33, 38, 45);
     color: rgb(215, 210, 200);
     font-weight: bold;
@@ -133,25 +136,27 @@ body {
 }
 
 #your-groups li img {
-    height: 4rem;
-    width: 4rem;
-    border-radius: 50%;
+    height: 5rem;
+    width: 5rem;
+    border-radius: 5%;
     margin-right: 1rem;
 }
 
 #create-group-btn {
-    background: linear-gradient(45deg, rgb(255, 206, 86), rgb(130, 195, 95));
-    color: rgb(22, 27, 34);
+    background-color: rgb(13, 17, 23);
     border: none;
-    border-radius: 50%;
+    border-radius: 5%;
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    font-weight: bold;
-    width: 2rem;
-    height: 2rem;
-    margin-left: 0.5rem;
+    width: 4rem;
+    height: 4rem;
     cursor: pointer;
+}
+
+#create-group-btn img {
+    width: 4rem;
+    height: 4rem;
 }
 
 #logout-container {
@@ -162,15 +167,15 @@ body {
 }
 
 #logout-btn {
-    background: linear-gradient(45deg, rgb(255, 206, 86), rgb(130, 195, 95));
-    color: rgb(22, 27, 34);
-    padding: 1rem;
-    width: 50%;
-    font-size: 1.5rem;
-    font-weight: bold;
+    background-color: rgb(13, 17, 23);
+    width: 100%;
+    height: 100%;
     border: none;
-    border-radius: 0.5rem;
     cursor: pointer;
+}
+
+#logout-btn img {
+    height: 2.5rem;
 }
 
 #chat-section {
@@ -199,7 +204,6 @@ body {
     padding: 0;
     margin: 1rem 0 1rem 1rem;
     list-style-type: none;
-    border-radius: 0.5rem;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -212,7 +216,6 @@ body {
     background-color: rgb(33, 38, 45);
     color: rgb(215, 210, 200);
     font-weight: bold;
-    border-radius: 0.5rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -224,7 +227,6 @@ body {
     margin: 0.5rem 0;
     padding: 1rem;
     font-size: 1.25rem;
-    border-radius: 0.5rem;
 }
 
 #chat li p {
@@ -233,13 +235,13 @@ body {
 
 #msg-by {
     align-self: flex-start;
-    color: yellowgreen;
+    color: rgb(255, 206, 86);
     font-style: italic;
 }
 
 #msg-time {
     align-self: flex-end;
-    color: yellowgreen;
+    color: rgb(255, 206, 86);
     font-style: italic;
     letter-spacing: 0.1rem;
 }
@@ -254,25 +256,58 @@ body {
     align-items: center;
 }
 
-#send-msg-container form {
+#send-msg-form {
     font-size: 1.5rem;
     margin: 1rem;
     width: 95%;
-    border-radius: 0.5rem;
     display: flex;
     justify-content: center;
     align-items: stretch;
 }
 
+#send-msg-form img {
+    width: 3rem;
+    height: 3rem;
+}
+
+#chat-msg-label {
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(33, 38, 45);
+}
+
 #msg-sent {
-    flex: 10;
-    margin-right: 0.5rem;
-    padding: 1rem;
+    width: 100%;
+    padding: 2rem;
     background-color: rgb(33, 38, 45);
     color: rgb(215, 210, 200);
     font-weight: bold;
     border: none;
-    border-radius: 0.5rem;
+}
+
+#msg-sent:focus {
+    outline: none;
+}
+
+#chat-image-label {
+    width: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(33, 38, 45);
+    cursor: pointer;
+}
+
+#send-msg-btn {
+    background-color: rgb(22, 27, 34);
+    margin: 0;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
 }
 
 input::placeholder {
@@ -288,18 +323,13 @@ input:-webkit-autofill {
     -webkit-text-fill-color: white !important;
 }
 
-#send-msg-btn {
-    flex: 1;
-    margin: 0;
-    border: none;
-    border-radius: 0.5rem;
-    background-image: linear-gradient(45deg, rgb(255, 206, 86), rgb(130, 195, 95));
-    background-color: rgb(22, 27, 34);
-    font-weight: bold;
+#chat-image {
+    display: none;
 }
 
-#send-msg-btn:hover {
-    cursor: pointer;
+#chat-image::-webkit-file-upload-button {
+    width: 5rem;
+    height: 5rem;
 }
 
 #other-users-section {
@@ -317,18 +347,16 @@ input:-webkit-autofill {
     justify-content: flex-start;
     align-items: stretch;
     background-color: rgb(13, 17, 23);
-    border-radius: 1rem;
 }
 
 #other-users-container p {
-    align-self: center;
+    align-self: flex-start;
     color: gray;
     font-weight: bold;
-    margin: 1rem 0;
+    margin: 1rem 2rem;
 }
 
 #other-users {
-    border-radius: 0.5rem;
     padding: 1rem 1rem 0 2rem;
     margin: 0;
     list-style-type: none;
@@ -342,7 +370,6 @@ input:-webkit-autofill {
 #other-users li {
     padding: 0.5rem;
     margin-bottom: 1rem;
-    border-radius: 0.5rem;
     background-color: rgb(33, 38, 45);
     color: rgb(215, 210, 200);
     font-weight: bold;
@@ -351,9 +378,9 @@ input:-webkit-autofill {
 }
 
 #other-users li img {
-    height: 4rem;
-    width: 4rem;
-    border-radius: 50%;
+    height: 5rem;
+    width: 5rem;
+    border-radius: 5%;
     margin-right: 1rem;
 }
 
@@ -364,15 +391,13 @@ input:-webkit-autofill {
 }
 
 ::-webkit-scrollbar-thumb {
-    background-image: linear-gradient(45deg, rgb(255, 206, 86), rgb(130, 195, 95));
-    border-radius: 0.5rem;
-    border: 0.2rem solid rgb(13, 17, 23);
+    background-color: rgb(255, 206, 86);
+    border: 0.4rem solid rgb(13, 17, 23);
 }
 
 #msg-notification {
     padding: 1rem;
     margin: 1rem 0 0 0;
-    border-radius: 0.5rem;
     background-color: rgb(33, 38, 45);
     color: yellowgreen;
     font-family: 'Quicksand';
@@ -435,7 +460,6 @@ input:-webkit-autofill {
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    /* position: relative; */
 }
 
 #group-name {
@@ -445,7 +469,6 @@ input:-webkit-autofill {
     padding: 1%;
     background-color: rgb(13, 17, 23);
     border: 0.15rem solid yellowgreen;
-    border-radius: 0.5rem;
     color: white;
 }
 
@@ -469,7 +492,6 @@ input:-webkit-autofill {
     width: 18%;
     cursor: pointer;
     text-align: center;
-    border-radius: 0.5rem;
     background-color: rgb(33, 38, 45);
     color: rgb(215, 210, 200);
     font-weight: bold;
@@ -487,12 +509,9 @@ input:-webkit-autofill {
 }
 
 #create-group-form-btn {
-    /* position: absolute; */
-    /* bottom: 1rem; */
     margin: 2rem;
     padding: 1.5rem;
     border: none;
-    border-radius: 0.5rem;
     background: linear-gradient(45deg, rgb(255, 206, 86), rgb(130, 195, 95));
     color: rgb(22, 27, 34);
     font-weight: bold;
@@ -505,7 +524,7 @@ input:-webkit-autofill {
     bottom: 0;
     right: 0;
     left: 0;
-    padding: 5rem;
+    padding: 2rem;
     background-color: rgb(22, 27, 34);
     display: none;
     flex-direction: column;
@@ -530,12 +549,15 @@ input:-webkit-autofill {
     margin: 0 0 2rem 0;
 }
 
+#group-pic-container p {
+    margin: 1rem 0;
+}
+
 #group-pic-form {
     height: 15%;
     width: 50%;
     padding: 1%;
     border: none;
-    border-radius: 1rem;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -554,17 +576,16 @@ input:-webkit-autofill {
 ::-webkit-file-upload-button {
     border: none;
     padding: 1.5rem;
-    border-radius: 1rem;
     color: white;
     background-color: rgb(22, 27, 34);
     cursor: pointer;
 }
 
 #upload-group-pic-btn {
+    height: 5rem;
     padding: 1.25rem;
     margin: 0;
     border: none;
-    border-radius: 1rem;
     font-weight: bold;
     color: rgb(22, 27, 34);
     background: linear-gradient(45deg, rgb(255, 206, 86), rgb(130, 195, 95));
@@ -572,9 +593,8 @@ input:-webkit-autofill {
 }
 
 #group-pic-image-container {
-    height: 60%;
-    /* width: 50%; */
-    padding: 1%;
+    height: 50%;
+    padding: 2%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -583,6 +603,6 @@ input:-webkit-autofill {
 #group-pic-image {
     height: 100%;
     width: 100%;
-    border-radius: 25%;
+    border-radius: 5%;
     background-color: rgb(33, 38, 45);
 }

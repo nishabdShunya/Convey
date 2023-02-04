@@ -2,8 +2,7 @@ const otherUsersList = document.getElementById('other-users');
 const loggedUserImg = document.getElementById('logged-user-img');
 const loggedUser = document.getElementById('logged-user');
 const loggedUserEmail = document.getElementById('logged-user-email');
-const msgSent = document.getElementById('msg-sent');
-const sendMsgBtn = document.getElementById('send-msg-btn');
+const sendMsgForm = document.getElementById('send-msg-form');
 const chat = document.getElementById('chat');
 const addMembers = document.getElementById('add-members');
 const createGroupBtn = document.getElementById('create-group-btn');
@@ -25,7 +24,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
 async function loadUsers() {
     try {
-        const response = await axios.get('http://18.183.40.94:3000/chat/online-users', {
+        const response = await axios.get('http://localhost:3000/chat/online-users', {
             headers: {
                 Authorization: localStorage.getItem('token')
             }
@@ -67,7 +66,7 @@ async function loadMessages() {
             }
         }
         // Calling backend for new messages
-        const response = await axios.get(`http://18.183.40.94:3000/chat/get-msgs?lastMsgId=${lastMsgId}`, {
+        const response = await axios.get(`http://localhost:3000/chat/get-msgs?lastMsgId=${lastMsgId}`, {
             headers: {
                 Authorization: localStorage.getItem('token')
             }
@@ -107,7 +106,8 @@ async function loadMessages() {
 function displayMessages(messages) {
     chat.innerHTML = '';
     for (let message of messages) {
-        const chatItem = `
+        if (message.dataValues.fileURL === null) {
+            const chatItem = `
             <li>
                 <p id="msg-by">${message.by}</p>
                 <div>
@@ -115,7 +115,19 @@ function displayMessages(messages) {
                 </div>    
                 <p id="msg-time">${message.dataValues.date} (${twelveHourClock(message.dataValues.time)})</p>
             </li>`;
-        chat.innerHTML += chatItem;
+            chat.innerHTML += chatItem;
+        } else {
+            const chatItem = `
+            <li>
+                <p id="msg-by">${message.by}</p>
+                <div>
+                    <img src="${message.dataValues.fileURL}">
+                    <p>${message.dataValues.msg}</p>
+                </div>    
+                <p id="msg-time">${message.dataValues.date} (${twelveHourClock(message.dataValues.time)})</p>
+            </li>`;
+            chat.innerHTML += chatItem;
+        }
     }
 };
 
@@ -126,27 +138,24 @@ function twelveHourClock(time) {
     return `${hour} : ${splittedTime[1]} ${AMorPM}`;
 };
 
-sendMsgBtn.addEventListener('click', sendMessage);
+sendMsgForm.addEventListener('submit', sendMessage);
 
 async function sendMessage(event) {
     event.preventDefault();
     try {
-        if (msgSent.value === '') {
-            showMsgNotification('Please enter a message.');
-        } else {
-            const response = await axios.post('http://18.183.40.94:3000/chat/add-msg', { msgSent: msgSent.value }, {
-                headers: {
-                    Authorization: localStorage.getItem('token')
-                }
-            });
-            if (response.status === 201) {
-                showMsgNotification(response.data.message);
-                loadMessages();
-                // Clearing the message field
-                msgSent.value = '';
-            } else {
-                showNotification('Something went wrong. Please try again.');
+        const sendMsgFormData = new FormData(sendMsgForm);
+        const response = await axios.post('http://localhost:3000/chat/add-msg', sendMsgFormData, {
+            headers: {
+                Authorization: localStorage.getItem('token')
             }
+        });
+        if (response.status === 201) {
+            showMsgNotification(response.data.message);
+            loadMessages();
+            // Clearing the message field
+            sendMsgForm.reset();
+        } else {
+            showNotification('Something went wrong. Please try again.');
         }
     } catch (error) {
         showNotification(error.response.data.message);
@@ -182,8 +191,8 @@ async function createGroup(event) {
             const groupObj = {
                 groupName: createGroupFormData.get('group_name'),
                 membersId: createGroupFormData.getAll('members')
-            }
-            const response = await axios.post('http://18.183.40.94:3000/group/add-group', groupObj, {
+            };
+            const response = await axios.post('http://localhost:3000/group/add-group', groupObj, {
                 headers: { Authorization: localStorage.getItem('token') }
             });
             if (response.status === 400) {
@@ -198,7 +207,7 @@ async function createGroup(event) {
                     try {
                         let groupImageFormData = new FormData(groupPicForm);
                         groupImageFormData.set('group_name', groupObj.groupName);
-                        const response = await axios.post('http://18.183.40.94:3000/group/add-group-pic', groupImageFormData);
+                        const response = await axios.post('http://localhost:3000/group/add-group-pic', groupImageFormData);
                         if (response.status === 201) {
                             showNotification(response.data.message);
                             groupPicImage.src = `../${response.data.group_pic}`;

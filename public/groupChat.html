@@ -28,13 +28,15 @@
         <div id="add-members-container">
             <p>ADD MEMBERS</p>
             <form id="add-member-form">
-                <input type="text" name="add-member-input" list="input" placeholder="&#128269; Search . . ." autocomplete="off">
+                <input type="text" name="add-member-input" list="input" placeholder="&#128269; Search . . ."
+                    autocomplete="off">
                 <datalist id="input"> </datalist>
-                <button id="add-member-btn" type="submit" title="Add"><img src="./addMember.png" alt="add-member"></button>
+                <button id="add-member-btn" type="submit" title="Add"><img src="./AM.png"
+                        alt="add-member"></button>
             </form>
         </div>
         <div id="close-group-container">
-            <button id="close-group-btn">Close Group</button>
+            <button id="close-group-btn" title="Close Group"><img src="./SD.png"></button>
         </div>
     </section>
     <section id="chat-section">
@@ -43,9 +45,15 @@
         </div>
         <div id="send-msg-container">
             <p id="msg-notification"></p>
-            <form>
-                <input type="text" name="msg" id="msg-sent" placeholder="Message">
-                <button type="submit" id="send-msg-btn">Send</button>
+            <form id="send-msg-form" enctype="multipart/form-data">
+                <label id="chat-msg-label">
+                    <input type="text" name="chat_msg" id="msg-sent" placeholder="Message">
+                </label>
+                <label id="chat-image-label">
+                    <img src="./camera.png" title="Add Image">
+                    <input type="file" name="chat_image" id="chat-image" title="Add Image">
+                </label>
+                <button type="submit" id="send-msg-btn" title="Send Message"><img src="./paperPlane.png"></button>
             </form>
         </div>
     </section>
