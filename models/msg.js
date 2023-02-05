@@ -15,9 +15,6 @@ const Message = sequelize.define('message', {
     fileURL: Sequelize.STRING,
     date: Sequelize.STRING,
     time: Sequelize.STRING
-},
-    {
-        timestamps: false
-    });
+});
 
 module.exports = Message;

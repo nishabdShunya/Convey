@@ -54,7 +54,7 @@ async function loadUsers() {
     }
 };
 
-async function loadMessages() {
+function loadMessages() {
     try {
         // Getting the latest 10 messages from the local storage
         let oldMessages = [];
@@ -66,38 +66,40 @@ async function loadMessages() {
             }
         }
         // Calling backend for new messages
-        const response = await axios.get(`http://18.183.40.94:3000/chat/get-msgs?lastMsgId=${lastMsgId}`, {
-            headers: {
-                Authorization: localStorage.getItem('token')
-            }
-        });
-        if (response.status === 200) {
-            const newMessages = response.data.messages;
-            let messages = newMessages;
-            if (oldMessages.length > 0) {
-                messages = [...oldMessages, ...newMessages];
-            }
-            // Displaying chat (latest 10 messages from local storage + new messages from backend) on screen
-            displayMessages(messages);
-            // Storing the latest 10 messages in the local storage
-            const numOfMsgs = messages.length;
-            const latestTenMsgs = [];
-            if (numOfMsgs < 10) {
-                for (let i = 0; i < numOfMsgs; i++) {
-                    latestTenMsgs.push(messages[i]);
+        setInterval(async () => {
+            const response = await axios.get(`http://18.183.40.94:3000/chat/get-msgs?lastMsgId=${lastMsgId}`, {
+                headers: {
+                    Authorization: localStorage.getItem('token')
                 }
+            });
+            if (response.status === 200) {
+                const newMessages = response.data.messages;
+                let messages = newMessages;
+                if (oldMessages.length > 0) {
+                    messages = [...oldMessages, ...newMessages];
+                }
+                // Displaying chat (latest 10 messages from local storage + new messages from backend) on screen
+                displayMessages(messages);
+                // Storing the latest 10 messages in the local storage
+                const numOfMsgs = messages.length;
+                const latestTenMsgs = [];
+                if (numOfMsgs < 10) {
+                    for (let i = 0; i < numOfMsgs; i++) {
+                        latestTenMsgs.push(messages[i]);
+                    }
+                } else {
+                    for (let i = numOfMsgs - 10; i < numOfMsgs; i++) {
+                        latestTenMsgs.push(messages[i]);
+                    }
+                }
+                localStorage.setItem('msgs', JSON.stringify(latestTenMsgs));
+                // Scrolling down to the latest chat
+                const chatContainer = document.getElementById('chat-container');
+                chatContainer.scrollTop = chatContainer.scrollHeight;
             } else {
-                for (let i = numOfMsgs - 10; i < numOfMsgs; i++) {
-                    latestTenMsgs.push(messages[i]);
-                }
+                showNotification('Something went wrong. Please try again.');
             }
-            localStorage.setItem('msgs', JSON.stringify(latestTenMsgs));
-            // Scrolling down to the latest chat
-            const chatContainer = document.getElementById('chat-container');
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        } else {
-            showNotification('Something went wrong. Please try again.');
-        }
+        }, 1000);
     } catch (error) {
         showNotification(error.response.data.message);
     }
