@@ -5,6 +5,8 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const cron = require('node-cron');
+const { Op } = require('sequelize');
 
 // Invoking the app
 const app = express();
@@ -20,6 +22,7 @@ const User = require('./models/user');
 const Message = require('./models/msg');
 const Group = require('./models/group');
 const GroupAndUsers = require('./models/groupAndUsers');
+const ArchivedMessage = require('./models/archivedMsg');
 
 // Using third party packages
 app.use(cors({
@@ -39,6 +42,22 @@ app.use('/groupChat', groupChatRoutes);
 
 app.use((req, res, next) => {
     res.sendFile(path.join(__dirname, `public/${req.url}`));
+});
+
+// Archiving 1 day old messages everyday 3am in the morning so as to lighten the message table
+cron.schedule('0 3 * * *', async () => {
+    const msgsToBeArchived = await Message.findAll({ where: { createdAt: { [Op.lte]: new Date(new Date() - (24 * 60 * 60 * 1000)) } } });
+    for (const msgToBeArchived of msgsToBeArchived) {
+        await ArchivedMessage.create({
+            msg: msgToBeArchived.msg,
+            fileURL: msgToBeArchived.fileURL,
+            date: msgToBeArchived.date,
+            time: msgToBeArchived.time,
+            userId: msgToBeArchived.userId,
+            groupId: msgToBeArchived.groupId
+        });
+    }
+    await Message.destroy({ where: { createdAt: { [Op.lte]: new Date(new Date() - (60 * 1000)) } } });
 });
 
 // Associations
