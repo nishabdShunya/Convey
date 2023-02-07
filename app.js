@@ -68,6 +68,6 @@ User.belongsToMany(Group, { through: GroupAndUsers });
 Group.hasMany(Message);
 Message.belongsTo(Group);
 
-sequelize.sync()
+sequelize.sync({force:true})
     .then(app.listen(3000))
     .catch(err => console.log(err));
