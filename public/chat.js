@@ -293,8 +293,6 @@ function createCustomSelect() {
 
 logoutBtn.addEventListener('click', (event) => {
     event.preventDefault();
-    // localStorage.removeItem('token');
-    // localStorage.removeItem('msgs');
     localStorage.clear();
     window.location.href = './login.html';
 })
