@@ -36,19 +36,10 @@ body {
     align-items: stretch;
 }
 
-#group-container {
-    height: 40%;
-    padding-bottom: 1rem;
+#convey-container {
+    height: 5%;
     display: flex;
-    flex-direction: column;
     justify-content: center;
-    align-items: center;
-    background-color: rgb(13, 17, 23);
-}
-
-#group-container div {
-    display: flex;
-    justify-content: flex-start;
     align-items: center;
 }
 
@@ -57,7 +48,7 @@ body {
     width: 3.5rem;
 }
 
-#group-container h1 {
+#convey-container h1 {
     font-family: 'Yatra One';
     font-size: 3rem;
     background-color: rgb(255, 206, 86);
@@ -72,11 +63,18 @@ body {
     padding-left: 0.5rem;
 }
 
+#group-container {
+    height: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 #group-img {
-    width: 15rem;
-    height: 15rem;
+    height: 80%;
     border-radius: 5%;
-    margin: 0.5rem;
+    margin-bottom: 1rem;
 }
 
 #group-container p {
@@ -92,16 +90,14 @@ body {
 }
 
 #close-group-container {
-    height: 8%;
+    height: 5%;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 #close-group-btn {
-    background-color: rgb(13, 17, 23);
-    width: 100%;
-    height: 100%;
+    background-color: transparent;
     border: none;
     cursor: pointer;
 }
@@ -401,7 +397,7 @@ input:-webkit-autofill {
 
 /* For adding more members */
 #add-members-container {
-    height: 45%;
+    height: 40%;
     padding: 0 2rem;
     display: none;
     flex-direction: column;

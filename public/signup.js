@@ -14,6 +14,9 @@ async function addUser(event) {
     try {
         if (username.value === '' || email.value === '' || phno.value === '' || password.value === '') {
             showNotification('Please enter all the fields.');
+        } else if (password.value.length < 8) {
+            console.log(password.value.length);
+            showNotification('Password must be at least 8 characters long.');
         } else {
             const userObj = {
                 name: username.value,
