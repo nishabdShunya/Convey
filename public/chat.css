@@ -32,20 +32,26 @@ body {
     padding: 1%;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: stretch;
 }
 
-#convey-container {
+#basic-container{
     height: 5%;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1rem;
+}
+
+#convey-container {
+    display: flex;
+    justify-content: flex-start;
     align-items: center;
 }
 
 #convey-logo {
     height: 3rem;
-    width: 3rem;
 }
 
 #convey-container h1 {
@@ -63,8 +69,28 @@ body {
     padding-left: 0.5rem;
 }
 
+#logout-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+#logout-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+}
+
+#logout-btn img {
+    height: 2.5rem;
+    padding: 0;
+    margin: 0;
+}
+
 #logged-user-container {
-    height: 40%;
+    height: 45%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -90,7 +116,7 @@ body {
 }
 
 #your-groups-container {
-    height: 40%;
+    height: 45%;
     font-size: 1.5rem;
     display: flex;
     flex-direction: column;
@@ -155,23 +181,6 @@ body {
 #create-group-btn img {
     width: 4rem;
     height: 4rem;
-}
-
-#logout-container {
-    height: 5%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-#logout-btn {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-}
-
-#logout-btn img {
-    height: 2.5rem;
 }
 
 #chat-section {

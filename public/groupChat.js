@@ -317,5 +317,6 @@ function showNotification(message) {
 closeGroupBtn.addEventListener('click', (event) => {
     event.preventDefault();
     localStorage.removeItem('groupMsgs');
+    localStorage.removeItem('groupName');
     window.location.href = './chat.html';
 });
