@@ -308,15 +308,15 @@ async function createGroup(event) {
             let groupImageFormData = new FormData(groupPicForm);
             groupImageFormData.set('group_name', groupObj.groupName);
             const response = await axios.post(
-              'http://18.183.40.94:3000/group/add-group-pic',
+              'http://localhost:3000/group/add-group-pic',
               groupImageFormData
             );
             if (response.status === 201) {
               showNotification(response.data.message);
               groupPicImage.src = `../${response.data.group_pic}`;
-              // setTimeout(() => {
-              //     window.location.href = './chat.html';
-              // }, 3000);
+              setTimeout(() => {
+                  window.location.href = './chat.html';
+              }, 3000);
             } else {
               showNotification('Something went wrong. Please try again.');
             }
@@ -343,9 +343,9 @@ function showNotification(message) {
   notification.innerHTML = `${message}`;
   notification.classList.add('notification');
   document.body.appendChild(notification);
-  // setTimeout(() => {
-  //     document.body.removeChild(notification);
-  // }, 3000);
+  setTimeout(() => {
+      document.body.removeChild(notification);
+  }, 3000);
 }
 
 // Creating a copy of select element for selecting group members
