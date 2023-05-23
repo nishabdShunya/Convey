@@ -5,6 +5,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const socket = require('socket.io');
 const cron = require('node-cron');
 const { Op } = require('sequelize');
 
@@ -25,10 +26,12 @@ const GroupAndUsers = require('./models/groupAndUsers');
 const ArchivedMessage = require('./models/archivedMsg');
 
 // Using third party packages
-app.use(cors({
+app.use(
+  cors({
     origin: '*',
-    methods: ['POST', 'GET', 'PUT', 'PATCH', 'DELETE', 'HEAD']
-}));
+    methods: ['POST', 'GET', 'PUT', 'PATCH', 'DELETE', 'HEAD'],
+  })
+);
 app.use(bodyParser.json());
 
 // Static images folder
@@ -41,23 +44,29 @@ app.use('/group', groupRoutes);
 app.use('/groupChat', groupChatRoutes);
 
 app.use((req, res, next) => {
-    res.sendFile(path.join(__dirname, `public/${req.url}`));
+  res.sendFile(path.join(__dirname, `public/${req.url}`));
 });
 
 // Archiving 1 day old messages everyday 3am in the morning so as to lighten the message table
 cron.schedule('0 3 * * *', async () => {
-    const msgsToBeArchived = await Message.findAll({ where: { createdAt: { [Op.lte]: new Date(new Date() - (24 * 60 * 60 * 1000)) } } });
-    for (const msgToBeArchived of msgsToBeArchived) {
-        await ArchivedMessage.create({
-            msg: msgToBeArchived.msg,
-            fileURL: msgToBeArchived.fileURL,
-            date: msgToBeArchived.date,
-            time: msgToBeArchived.time,
-            userId: msgToBeArchived.userId,
-            groupId: msgToBeArchived.groupId
-        });
-    }
-    await Message.destroy({ where: { createdAt: { [Op.lte]: new Date(new Date() - (60 * 1000)) } } });
+  const msgsToBeArchived = await Message.findAll({
+    where: {
+      createdAt: { [Op.lte]: new Date(new Date() - 24 * 60 * 60 * 1000) },
+    },
+  });
+  for (const msgToBeArchived of msgsToBeArchived) {
+    await ArchivedMessage.create({
+      msg: msgToBeArchived.msg,
+      fileURL: msgToBeArchived.fileURL,
+      date: msgToBeArchived.date,
+      time: msgToBeArchived.time,
+      userId: msgToBeArchived.userId,
+      groupId: msgToBeArchived.groupId,
+    });
+  }
+  await Message.destroy({
+    where: { createdAt: { [Op.lte]: new Date(new Date() - 60 * 1000) } },
+  });
 });
 
 // Associations
@@ -68,6 +77,54 @@ User.belongsToMany(Group, { through: GroupAndUsers });
 Group.hasMany(Message);
 Message.belongsTo(Group);
 
-sequelize.sync({ force: true })
-    .then(app.listen(3000))
-    .catch(err => console.log(err));
+const server = app.listen(3000);
+const io = socket(server);
+
+io.use((socket, next) => {
+  const token = socket.handshake.auth.token;
+  // Authenticate the token and verify the user
+  // ...
+  const user = User.findOne({ where: { id: 1 } });
+  if (user) {
+    socket.user = user;
+    next();
+  } else {
+    next(new Error('Authentication failed'));
+  }
+});
+
+io.on('connection', (socket) => {
+  socket.on('sendMessage', (message) => {
+    io.emit('newMessage', message);
+  });
+  socket.on('createGroup', (group) => {
+    io.emit('newGroup', group);
+  });
+
+  socket.on('selectGroup', (group) => {
+    socket.join(group);
+
+    io.emit('newGroup', group);
+  });
+  socket.on('groupMessage', (message) => {
+    io.emit('newGroupMessage', message);
+  });
+
+  socket.on('newMember', (group) => {
+    socket.join(group);
+
+    io.emit('newGroup', group);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
+});
+sequelize
+  .sync()
+  .then((result) => {
+    console.log('Server started');
+  })
+  .catch((err) => {
+    console.log(err);
+  });
