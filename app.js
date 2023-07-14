@@ -80,19 +80,6 @@ Message.belongsTo(Group);
 const server = app.listen(3000);
 const io = socket(server);
 
-io.use((socket, next) => {
-  const token = socket.handshake.auth.token;
-  // Authenticate the token and verify the user
-  // ...
-  const user = User.findOne({ where: { id: 1 } });
-  if (user) {
-    socket.user = user;
-    next();
-  } else {
-    next(new Error('Authentication failed'));
-  }
-});
-
 io.on('connection', (socket) => {
   socket.on('sendMessage', (message) => {
     io.emit('newMessage', message);

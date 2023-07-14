@@ -48,7 +48,6 @@ socket.on('newGroup', (group) => {
 });
 
 socket.on('newMember', (member) => {
-  console.log(member);
   membersList.innerHTML += `
     <li>
         <div>

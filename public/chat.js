@@ -23,11 +23,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
   loadUsers();
   loadMessages();
 });
-const socket = io('http://localhost:3000', {
-  auth: {
-    token: localStorage.getItem('token'),
-  },
-});
+const socket = io('http://localhost:3000');
 
 async function loadUsers() {
   try {
@@ -293,12 +289,12 @@ async function createGroup(event) {
         {
           headers: { Authorization: localStorage.getItem('token') },
         }
-      );
-      if (response.status === 400) {
-        showNotification(response.data.message);
-      } else if (response.status === 403) {
-        showNotification(response.data.message);
-      } else if (response.status === 201) {
+        );
+        if (response.status === 400) {
+          showNotification(response.data.message);
+        } else if (response.status === 403) {
+          showNotification(response.data.message);
+        } else if (response.status === 201) {
         socket.emit('newGroup', response.data);
         showNotification(response.data.message);
         groupPicContainer.style.display = 'flex';

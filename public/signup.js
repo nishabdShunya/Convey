@@ -61,7 +61,8 @@ async function addUser(event) {
             password.value = '';
         }
     } catch (error) {
-        showNotification(error.response.data.message);
+        console.log(error.message);
+        showNotification(error?.response?.data?.message);
     }
 }
 
