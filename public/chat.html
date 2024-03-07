@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="chat.css">
     <script src="chat.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.2/axios.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.js"></script>
 </head>
 
 <body>
@@ -36,7 +37,7 @@
         </div>
         <div id="create-group-container">
             <button id="create-group-container-close-btn">&times;</button>
-            <form id="create-group-form" enctype="multipart/form-data">
+            <form id="create-group-form" enctype="multipart/form-data" action="/chat.html" method="POST">
                 <input type="text" name="group_name" id="group-name" placeholder="Give your group a name">
                 <p>Select Group Members</p>
                 <select name="members" id="add-members" class="custom-select" multiple> </select>
@@ -62,7 +63,7 @@
         </div>
         <div id="send-msg-container">
             <p id="msg-notification"></p>
-            <form id="send-msg-form" enctype="multipart/form-data">
+            <form id="send-msg-form" enctype="multipart/form-data" action="/chat.html" method="POST">
                 <label id="chat-msg-label">
                     <input type="text" name="chat_msg" id="msg-sent" placeholder="Message">
                 </label>
